@@ -10,52 +10,45 @@
 <body>
 
 
-    <h2>What is your date of birth? </h2>
+    <div class="text-center">
+        <h1>What is your birthday?</h1>
 
-    <div class="btn-group">
-        <button class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="false">
-            Day
-        </button>
-        <ul class="dropdown-menu">
-            <?php
-            $day = 1;
+        <!-- DAY start here -->
+        <?php
+        echo '<select class="bg-primary fs-2 rounded" id="day" name="day">' . "\n";
+        echo "<option class='bg-white' selected>Day</option>" . "\n";
 
-            for ($day = 1; $day < 32; $day++) {
-                echo "<li><a class='dropdown-item fs-6'>" . $day . "</a></li>";
-            }
-            ?>
-        </ul>
-    </div>
+        for ($day = 1; $day <= 31; $day++) {
+            echo "<option class='bg-white'>" . $day . "</option>" . "\n";
+        }
+        echo '</select>' . "\n";
+        ?>
 
-    <div class="btn-group">
-        <button class="btn btn-warning btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Month
-        </button>
-        <ul class="dropdown-menu">
-            <?php
+        <!-- MONTH start here -->
+        <?php
+        $month = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 
-            $month = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-            for ($montharray = 0; $montharray <= 11; $montharray++) {
+        echo '<select class="bg-warning fs-2 rounded text-center" id="month" name="month">' . "\n";
+        echo "<option class='bg-white' selected>Month</option>" . "\n";
 
-                echo "<li><a class='dropdown-item fs-6'>" . $month[$montharray] . "</a></li>";
-            }
-            ?>
-        </ul>
-    </div>
+        for ($montharray = 0; $montharray < 11; $montharray++) {
+            echo "<option class='bg-white'>" . $month[$montharray] . "</option>" . "\n";
+        }
+        echo '</select>' . "\n";
+        ?>
 
-    <div class="btn-group">
-        <button class="btn btn-danger btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Year
-        </button>
-        <ul class="dropdown-menu">
-            <?php
-            $year = 1900;
-            for ($year = 1900; $year <= 2021; $year++) {
+        <!-- YEAR start here -->
+        <?php
+        $staring_year  = 1900;
+        $current_year = date('Y');
+        echo '<select class="bg-danger fs-2 rounded" id="year" name="year">' . "\n";
+        echo "<option class='bg-white' selected>Year</option>" . "\n";
 
-                echo "<li><a class='dropdown-item fs-6'>" . $year . "</a></li>";
-            }
-            ?>
-        </ul>
+        for ($year = $staring_year; $year <= $current_year; $year++) {
+            echo "<option class='bg-white'>" . $year . "</option>" . "\n";
+        }
+        echo '</select>' . "\n";
+        ?>
     </div>
 
 
