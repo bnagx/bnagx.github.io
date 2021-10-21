@@ -1,3 +1,6 @@
+<!--ID: 2020052-BSE-->
+<!--Name: WAN HAO XIN-->
+<!--Topic:Week2 Homework1(generate select menu using php) -->
 <!DOCTYPE html>
 <html>
 
@@ -5,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous" />
-    <title>Week2 Homework1</title>
+    <title>Week2 Homework1(generate select menu using php)</title>
 </head>
 
 <body>
@@ -15,59 +18,41 @@
 
         <!-- DAY start here -->
         <?php
-        echo '<select class="bg-primary fs-2 rounded" id="day" name="day">' . "\n";
+        $day = 1;
+
+        echo '<select class="bg-primary fs-1 rounded text-center" id="day" name="day">' . "\n";
         echo "<option class='bg-white' selected>Day</option>" . "\n";
 
         for ($day = 1; $day <= 31; $day++) {
-            echo "<option class='bg-white'>" . $day . "</option>" . "\n";
+            echo "<option class='bg-white' value='$day'> $day </option>" . "\n";
         }
         echo '</select>' . "\n";
         ?>
 
         <!-- MONTH start here -->
         <?php
-        echo '<select class="bg-warning fs-2 rounded text-center" id="month" name="month">' . "\n";
+        echo '<select class="bg-warning fs-1 rounded text-center" id="month" name="month">' . "\n";
         echo "<option class='bg-white' selected>Month</option>" . "\n";
 
         for ($month = 1; $month <= 12; $month++) {
-            echo "<option class='bg-white'>" . $month . "</option>" . "\n";
+            echo "<option class='bg-white' value='$month'>  $month  </option>" . "\n";
         }
         echo '</select>' . "\n";
         ?>
 
         <!-- YEAR start here -->
         <?php
-        $staring_year  = 1900;
+        $starting_year  = 1900;
         $current_year = date('Y');
-        echo '<select class="bg-danger fs-2 rounded" id="year" name="year">' . "\n";
+        echo '<select class="bg-danger fs-1 rounded" id="year" name="year">' . "\n";
         echo "<option class='bg-white' selected>Year</option>" . "\n";
 
-        for ($year = $staring_year; $year <= $current_year; $year++) {
-            echo "<option class='bg-white'>" . $year . "</option>" . "\n";
+        for ($year = $starting_year; $year <= $current_year; $year++) {
+            echo "<option class='bg-white' value='$year'>  $year  </option>" . "\n";
         }
         echo '</select>' . "\n";
         ?>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
 
