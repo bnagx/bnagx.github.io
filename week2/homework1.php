@@ -18,39 +18,36 @@
 
         <!-- DAY start here -->
         <?php
-        $day = 1;
-
-        echo '<select class="bg-primary fs-1 rounded text-center" id="day" name="day">' . "\n";
-        echo "<option class='bg-white' selected>Day</option>" . "\n";
-
+        echo "<select class='bg-primary fs-2 rounded text-center' id='day' name='day'>";
+        echo "<option class='bg-white' selected>Day</option>";
         for ($day = 1; $day <= 31; $day++) {
-            echo "<option class='bg-white' value='$day'> $day </option>" . "\n";
+            echo "<option class='bg-white' value='$day'> $day </option>";
         }
-        echo '</select>' . "\n";
+        echo '</select>';
         ?>
 
         <!-- MONTH start here -->
         <?php
-        echo '<select class="bg-warning fs-1 rounded text-center" id="month" name="month">' . "\n";
-        echo "<option class='bg-white' selected>Month</option>" . "\n";
+        echo "<select class='bg-warning fs-2 rounded text-center' id='month' name='month'>";
+        echo "<option class='bg-white' selected>Month</option>";
 
         for ($month = 1; $month <= 12; $month++) {
-            echo "<option class='bg-white' value='$month'>  $month  </option>" . "\n";
+            echo "<option class='bg-white text-center' value='$month'>  $month  </option>";
         }
-        echo '</select>' . "\n";
+        echo '</select>';
         ?>
 
         <!-- YEAR start here -->
         <?php
         $starting_year  = 1900;
         $current_year = date('Y');
-        echo '<select class="bg-danger fs-1 rounded" id="year" name="year">' . "\n";
-        echo "<option class='bg-white' selected>Year</option>" . "\n";
+        echo "<select class='bg-danger fs-2 rounded' id='year' name='year'>";
+        echo "<option class='bg-white' selected>Year</option>";
 
         for ($year = $starting_year; $year <= $current_year; $year++) {
-            echo "<option class='bg-white' value='$year'>  $year  </option>" . "\n";
+            echo "<option class='bg-white' value='$year'>  $year  </option>";
         }
-        echo '</select>' . "\n";
+        echo '</select>';
         ?>
     </div>
 
