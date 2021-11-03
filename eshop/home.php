@@ -17,10 +17,12 @@
         <div class="container-fluid">
 
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a href="home.php">Home</a></li>
                 <li><a href="customer_create.php">Create Customer</a></li>
                 <li><a href="product_create.php">Create Product</a></li>
                 <li><a href="contactus.php">Contact Us</a></li>
+                <li><a href="customer_read.php">Read Customers</a></li>
+                <li><a href="product_read.php">Read Products</a></li>
             </ul>
         </div>
     </nav>
