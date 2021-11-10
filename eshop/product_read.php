@@ -21,10 +21,12 @@
             <ul class="nav navbar-nav">
                 <li><a href="home.php">Home</a></li>
                 <li><a href="customer_create.php">Create Customer</a></li>
-                <li><a href="product_create.php">Create Product</a></li>
+                <li><a href="product_create.php">Create Products</a></li>
+                <li><a href="order_create.php">Create Order</a></li>
                 <li><a href="contactus.php">Contact Us</a></li>
                 <li><a href="customer_read.php">Read Customers</a></li>
                 <li class="active"><a href="product_read.php">Read Products</a></li>
+                <li><a href="order_summary.php">Read Orders</a></li>
             </ul>
         </div>
     </nav>
