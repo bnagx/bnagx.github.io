@@ -24,7 +24,6 @@
                 <li class="active"><a href="contactus.php">Contact Us</a></li>
                 <li><a href="customer_read.php">Read Customers</a></li>
                 <li><a href="product_read.php">Read Products</a></li>
-                <li><a href="order_summary.php">Read Orders</a></li>
             </ul>
         </div>
     </nav>
