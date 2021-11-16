@@ -55,53 +55,58 @@
             // include database connection
             include 'config/database.php';
 
-            $flag = 0;
-            $message = '';
-
-            if (empty($_POST['cus_username'])) {
-                $flag = 1;
-                $message = 'Please select a Username.';
-            } else if (empty($_POST['product'][0])) {
-                $flag = 1;
-                $message = 'Please select a product.';
-            } else if (empty($_POST['quantity'][0])) {
-                $flag = 1;
-                $message = 'Please select a quantity.';
-            }
-
+            var_dump($_POST);
+            /*
             try {
                 // insert query
-                $query = "INSERT INTO order_summary SET username=:cus_username, order_date=:order_date";
+                $query = "INSERT INTO order_details SET name=:product1, quantity=:quantity1, price=:price1";
+                //name=:product2, quantity=:quantity2";
+                // prepare query for execution
+                $stmt = $con->prepare($query);
+                $product1 = $_POST['product1'];
+                $quantity1 = $_POST['quantity1'];
+                //$price1 = $p1 * $_POST['quantity1'];
+                //$product2 = $_POST['product2'];
+                //$quantity2 = $_POST['quantity2'];
+                // bind the parameters
+                $stmt->bindParam(':product1', $product1);
+                $stmt->bindParam(':quantity1', $quantity1);
+                $stmt->bindParam(':price1', $price1);
+                //$stmt->bindParam(':product2', $product2);
+                //$stmt->bindParam(':quantity2', $quantity2);
+                if ($stmt->execute()) {
+                    echo "<div class='alert alert-success'>Record was saved.</div>";
+                } else {
+                    echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                }
+            } catch (PDOException $exception) {
+                die('ERROR: ' . $exception->getMessage());
+            }
+*/
+            try {
+                // insert query
+                $query = "INSERT INTO order_summary SET username=:cus_username, purchase_date=:purchase_date";
                 // prepare query for execution
                 $stmt = $con->prepare($query);
                 $cus_username = $_POST['cus_username'];
                 // bind the parameters
                 $stmt->bindParam(':cus_username', $cus_username);
-                $order_date = date('Y-m-d H:i:s'); // get the current date and time
-                $stmt->bindParam(':order_date', $order_date);
+                $purchase_date = date('Y-m-d H:i:s'); // get the current date and time
+                $stmt->bindParam(':purchase_date', $purchase_date);
 
-
-                if ($flag == 0) {
-                    if ($stmt->execute()) {
-                        $last_id = $con->lastInsertId();
-                        for ($count = 0; $count < 3; $count++) {
-                            $query2 = "INSERT INTO order_details SET order_id=:order_id, product_id=:product_id, quantity=:quantity";
-                            $stmt = $con->prepare($query2);
-                            $stmt->bindParam(':order_id', $last_id);
-                            $stmt->bindParam(':product_id', $_POST['product'][$count]);
-                            $stmt->bindParam(':quantity', $_POST['quantity'][$count]);
-                            if (!empty($_POST['product'][$count]) && !empty($_POST['quantity'][$count])) {
-                                $stmt->execute();
-                            }
-                        }
-                        echo "<div class='alert alert-success'>Record was saved.Last inserted ID is: $last_id</div>";
-                    } else {
-                        echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                if ($stmt->execute()) {
+                    $last_id = $con->lastInsertId();
+                    for ($count = 0; $count < 3; $count++) {
+                        $query2 = "INSERT INTO order_details SET order_id=:order_id, product_id=:product_id, quantity=:quantity";
+                        $stmt = $con->prepare($query2);
+                        $stmt->bindParam(':order_id', $last_id);
+                        $stmt->bindParam(':product_id', $_POST['product'][$count]);
+                        $stmt->bindParam(':quantity', $_POST['quantity'][$count]);
+                        $stmt->execute();
                     }
+                    echo "<div class='alert alert-success'>Record was saved.Last inserted ID is: $last_id</div>";
                 } else {
-                    echo "<div class='alert alert-danger'>";
-                    echo $message;
-                    echo "</div>";
+                    echo "<div class='alert alert-danger'>Unable to save record.</div>";
                 }
             } catch (PDOException $exception) {
                 die('ERROR: ' . $exception->getMessage());
@@ -128,7 +133,7 @@
                     ?>
                 </tr>
                 <tr>
-                    <th>Products</th>
+                    <th>Products 1</th>
                     <th>Quantity</th>
                 </tr>
                 <?php
@@ -140,24 +145,22 @@
                     array_push($product_arrID, $row['product_id']);
                     array_push($product_arrName, $row['name']);
                 }
-
+                //print_r($product_arr);
 
                 for ($x = 0; $x <= 2; $x++) {
                     echo "<tr>";
                     echo '<td>
                        <select class="fs-4 rounded" name="product[]">';
-                    echo  '<option disable selected value>Select Product</option>';
+                    echo  '<option disable selected value>--Select--</option>';
                     for ($product_count = 0; $product_count < count($product_arrName); $product_count++) {
                         echo  "<option value='" . $product_arrID[$product_count] . "'>" . $product_arrName[$product_count] . "</option>";
                     }
                     echo "</select>";
                     echo '</td>';
-
-
                     echo "<td>";
                     echo '<select class="w-100 fs-4 rounded" name="quantity[]" class="form-control">';
-                    echo "<option class='bg-white' disable selected value> Select Quantity</option>";
-                    for ($quantity = 1; $quantity <= 10; $quantity++) {
+                    echo "<option class='bg-white' disable selected value>Please Select Your Quantity</option>";
+                    for ($quantity = 1; $quantity <= 5; $quantity++) {
                         echo "<option value='$quantity'>$quantity</option>";
                     }
                     echo '</td>';
