@@ -23,6 +23,7 @@
                 <li><a href="contactus.php">Contact Us</a></li>
                 <li><a href="customer_read.php">Read Customers</a></li>
                 <li><a href="product_read.php">Read Products</a></li>
+                <li><a href="order_read.php">Read Orders</a></li>
             </ul>
         </div>
     </nav>
@@ -169,7 +170,7 @@
                     <td></td>
                     <td>
                         <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                        <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
                     </td>
                 </tr>
             </table>

@@ -45,7 +45,7 @@
         // delete message prompt will be here
 
         // select all data
-        $query = "SELECT order_id, username, order_date FROM order_summary ORDER BY order_id DESC";
+        $query = "SELECT order_summary.order_id, order_summary.username, customers.email, order_summary.order_date FROM order_summary  INNER JOIN customers ON order_summary.username= customers.username ORDER BY order_id ";
         $stmt = $con->prepare($query);
         $stmt->execute();
 
@@ -65,6 +65,7 @@
             echo "<th>order_id</th>";
             echo "<th>username</th>";
             echo "<th>order_date</th>";
+            echo "<th>email</th>";
             echo "<th>Action</th>";
             echo "</tr>";
 
@@ -78,6 +79,7 @@
                 echo "<td>{$order_id}</td>";
                 echo "<td>{$username}</td>";
                 echo "<td>{$order_date}</td>";
+                echo "<td>{$email}</td>";
                 echo "<td>";
                 // read one record
                 echo "<a href='order_read_one.php?id={$order_id}' class='btn btn-info m-r-1em'>Read</a>";

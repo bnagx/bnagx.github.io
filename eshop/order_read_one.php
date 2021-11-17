@@ -31,7 +31,6 @@
 
         // read current record's data
         try {
-
             $query = "SELECT order_details.orderdetail_id, order_details.order_id, order_details.product_id, order_details.quantity, products.name FROM order_details INNER JOIN products ON order_details.product_id = products.product_id WHERE order_id = :order_id ";
 
             $stmt = $con->prepare($query);
@@ -87,11 +86,12 @@
         }
         ?>
 
-
-
-
-
-
+        <tr>
+            <td></td>
+            <td>
+                <a href='order_read.php' class='btn btn-danger'>Back to read order</a>
+            </td>
+        </tr>
 
     </div> <!-- end .container -->
 
