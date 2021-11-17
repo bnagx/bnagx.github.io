@@ -28,28 +28,57 @@
         //include database connection
         include 'config/database.php';
 
+
         // read current record's data
         try {
-            // prepare select query
-            $query = "SELECT orderdetail_id, order_id, product_id, quantity FROM order_details WHERE orderdetail_id = :orderdetail_id ";
+
+            $query = "SELECT order_details.orderdetail_id, order_details.order_id, order_details.product_id, order_details.quantity, products.name FROM order_details INNER JOIN products ON order_details.product_id = products.product_id WHERE order_id = :order_id ";
+
             $stmt = $con->prepare($query);
 
             // Bind the parameter
-            $stmt->bindParam(":orderdetail_id", $id);
+            $stmt->bindParam(":order_id", $id);
 
             // execute our query
             $stmt->execute();
 
-            // store retrieved row to a variable
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $num = $stmt->rowCount();
 
-            // values to fill up our form
-            $orderdetail_id = $row['orderdetail_id'];
-            $order_id = $row['order_id'];
-            $product_id = $row['product_id'];
-            $quantity = $row['quantity'];
+            if ($num > 0) {
 
-            // shorter way to do that is extract($row)
+                echo "<table class='table table-hover table-responsive table-bordered'>"; //start table
+
+                //creating our table heading
+                echo "<tr>";
+                echo "<th>orderdetail_id</th>";
+                echo "<th>order_id</th>";
+                echo "<th>product_id</th>";
+                echo "<th>quantity</th>";
+                echo "<th>name</th>";
+                echo "</tr>";
+
+                // retrieve our table contents
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row);
+                    // creating new table row per record
+                    echo "<tr>";
+                    echo "<td>{$orderdetail_id}</td>";
+                    echo "<td>{$order_id}</td>";
+                    echo "<td>{$product_id}</td>";
+                    echo "<td>{$quantity}</td>";
+                    echo "<td>{$name}</td>";
+                    echo "<td>";
+
+                    echo "</td>";
+                    echo "</tr>";
+                }
+
+
+                // end table
+                echo "</table>";
+            } else {
+                echo "<div class='alert alert-danger'>No records found.</div>";
+            }
         }
 
         // show error
@@ -59,31 +88,9 @@
         ?>
 
 
-        <!--we have our html table here where the record will be displayed-->
-        <table class='table table-hover table-responsive table-bordered'>
-            <tr>
-                <td>orderdetail_id</td>
-                <td><?php echo htmlspecialchars($orderdetail_id, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td>order_id</td>
-                <td><?php echo htmlspecialchars($order_id, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td>product_id</td>
-                <td><?php echo htmlspecialchars($product_id, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td>quantity</td>
-                <td><?php echo htmlspecialchars($quantity, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
-                </td>
-            </tr>
-        </table>
+
+
+
 
 
     </div> <!-- end .container -->

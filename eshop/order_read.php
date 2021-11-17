@@ -65,6 +65,7 @@
             echo "<th>order_id</th>";
             echo "<th>username</th>";
             echo "<th>order_date</th>";
+            echo "<th>Action</th>";
             echo "</tr>";
 
             // retrieve our table contents
