@@ -65,19 +65,87 @@
                 $stmt->bindParam(':gender', $gender);
                 $stmt->bindParam(':dateofbirth', $dateofbirth);
                 // Execute the query
-                if (!preg_match("/[a-z A-Z]/", $password) || !preg_match("/[0-9]/", $password)) {
-                    echo
-                    "<div class='alert alert-danger'>Please make sure there is alphabets(Upper,Lower case) and number in the password.</div>";
-                } else if ($password !== $confirm_password) {
-                    echo "<div class='alert alert-danger'>Please ensure that Password and Confirm Password are the same.</div>";
-                } else if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was saved.</div>";
-                } else {
-                    echo "<div class='alert alert-danger'>Unable to save record.</div>";
+
+                $flag = 0;
+                $message = "";
+                $cur_date = date('Y');
+                $cust_age = ((int)$cur_date - (int)$dateofbirth);
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                    if (empty($_POST["username"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $usernameErr = "Name is required";
+                    }
+
+                    if (empty($_POST["email"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $emailErr = "Email is required";
+                    }
+
+                    if (empty($_POST["password"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $passwordErr = "Password is required";
+                    }
+
+                    if (empty($_POST["confirm_password"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $confirm_passwordErr = "Confirm Password is required";
+                    }
+
+                    if (empty($_POST["first_name"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $first_nameErr = "First Name is required";
+                    }
+
+                    if (empty($_POST["last_name"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $last_nameErr = "Last Name is required";
+                    }
+
+                    if (empty($_POST["gender"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $genderErr = "Gender is required";
+                    }
+
+                    if (empty($_POST["dateofbirth"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $date_of_birthErr = "Date of Birth is required";
+                    }
+                } elseif (!preg_match("/[a-zA-Z]/", $password) || !preg_match("/[0-9]/", $password) || !preg_match("/[a-zA-Z0-9]{8,}/", $password)) {
+                    $flag = 1;
+                    $message = "Password must at least 8 character and must contain number and alphabets.";
+                } elseif ($password !== $confirm_password) {
+                    $flag = 1;
+                    $message = "Please make sure Password and Confirm Password are same.";
+                } elseif ($cust_age < 18) {
+                    $flag = 1;
+                    $message = "Customer must be age of 18 or above.";
+                } elseif (!preg_match("/[a-zA-Z0-9]{6,}/", $username)) {
+                    $flag = 1;
+                    $message = "Username must be at least 6 characters";
                 }
-            }
-            // show error
-            catch (PDOException $exception) {
+
+                if ($flag == 0) {
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was saved.</div>";
+                    } else {
+                        echo "Unable to save record.";
+                    }
+                } else {
+                    echo "<div class='alert alert-danger'>";
+                    echo $message;
+                    echo "</div>";
+                }
+            } catch (PDOException $exception) {
                 die('ERROR: ' . $exception->getMessage());
             }
         }
@@ -88,54 +156,86 @@
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>Username</td>
-                    <td><input type='text' name='username' class='form-control' /></td>
+                    <td><input type='text' name='username' class='form-control' />
+                        <span>
+                            <?php if (isset($usernameErr)) echo "<div class='text-danger'>*$usernameErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Email</td>
-                    <td><input type='email' name='email' class='form-control' /></td>
+                    <td><input type='email' name='email' class='form-control' />
+                        <span>
+                            <?php if (isset($emailErr)) echo "<div class='text-danger'>*$emailErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Password</td>
-                    <td><input type="password" name='password' class='form-control' /></td>
+                    <td><input type="password" name='password' class='form-control' />
+                        <span>
+                            <?php if (isset($passwordErr)) echo "<div class='text-danger'>*$passwordErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Confirm Password</td>
-                    <td><input type="password" name='confirm_password' class='form-control' /></td>
+                    <td><input type="password" name='confirm_password' class='form-control' />
+                        <span>
+                            <?php if (isset($confirm_passwordErr)) echo "<div class='text-danger'>*$confirm_passwordErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>First Name</td>
-                    <td><input type="text" name='first_name' class='form-control' /></td>
+                    <td><input type="text" name='first_name' class='form-control' />
+                        <span>
+                            <?php if (isset($first_nameErr)) echo "<div class='text-danger'>*$first_nameErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Last Name</td>
-                    <td><input type="text" name='last_name' class='form-control' /></td>
+                    <td><input type="text" name='last_name' class='form-control' />
+                        <span>
+                            <?php if (isset($last_nameErr)) echo "<div class='text-danger'>*$last_nameErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Gender</td>
                     <td>
                         <div class="form-check form-check-inline">
-                            <input type="radio" id="male" name='gender' value="male" class="form-check-input">
+                            <input type="radio" id="male" name='gender' value="Male" class="form-check-input">
                             <label class="form-check-label" for="male">Male</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input type="radio" id="female" name='gender' value="female" class="form-check-input">
+                            <input type="radio" id="female" name='gender' value="Female" class="form-check-input">
                             <label class="form-check-label" for="female">Female</label>
                         </div>
+                        <span>
+                            <?php if (isset($genderErr)) echo "<div class='text-danger'>*$genderErr</div>  "; ?>
+                        </span>
                     </td>
                 </tr>
                 <tr>
                     <td>Date of birth</td>
-                    <td><input type='date' name='dateofbirth' class='form-control' /></td>
+                    <td><input type='date' name='dateofbirth' class='form-control' />
+                        <span>
+                            <?php if (isset($date_of_birthErr)) echo "<div class='text-danger'>*$date_of_birthErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>
                         <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                        <a href="product_read.php" class='btn btn-danger'>Back to read products</a>
                     </td>
                 </tr>
             </table>
         </form>
+
 
     </div>
     <!-- end .container -->

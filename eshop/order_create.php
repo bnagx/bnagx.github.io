@@ -52,6 +52,11 @@
             array_push($product_arrName, $row['name']);
         }
 
+
+
+
+
+
         $cus_username = "SELECT username FROM customers";
 
         $cu = $con->prepare($cus_username);
@@ -83,7 +88,7 @@
             } else if ($pflag == 0 || $pflagfail > 0) {
                 $flag = 1;
                 $message = "Please Select a Product together with Quantity.";
-            } else if (count($_POST['product']) !== count(array_unique($_POST['product']))) {
+            } else if (count($_POST['product']) !== count(array_unique($_POST['product']))) { // if the product[array] count is not equal to another, then run this (meaning that same items can't appear twice, prodcut [array] should be the same)
                 $flag = 1;
                 $message = "You can't select the same product multiple times";
             }
@@ -158,28 +163,69 @@
                     <th>Quantity</th>
                 </tr>
                 <?php
-
                 $quantity = 1;
 
-                echo "<tr class='productrow'>";
-                echo '<td>
+                /* if ($_POST) {
+                    $post_product = count($_POST['product']);
+                } else {
+                    $post_product = 1;
+                }*/
+                $post_product = $_POST ? count($_POST['product']) : 1; // SAME MEANING last if else comment
+                //if we add more than 1 row of ['product'], then post_product will increase, otherwise it will stay at 1
+                $arrayP = array('');
+                if ($_POST) {
+                    $array = $_POST['product'];
+
+                    for ($y = 0; $y <= count($_POST['product']); $y++) {
+                        if (empty($_POST['product'][$y])  && empty($_POST['quantity'][$y])) {
+                            unset($_POST['product'][$y]);
+                            unset($_POST['quantity'][$y]);
+                        }
+                        $arrayP = $_POST['product'];
+                    }
+                    echo '<pre>';
+                    var_dump($_POST);
+                    echo '</pre>';
+                }
+
+
+
+
+
+                //for ($productrow = 0; $productrow < $post_product; $productrow++) {
+                foreach ($arrayP as $productrow => $product_ID) {
+                    //the for loop here will loop a total of how many product row we inserted (also meaning that how many product we try to order)
+                    echo "<tr class='productrow'>";
+                    echo '<td>
                        <select class="fs-4 rounded" name="product[]">';
-                echo  '<option disable selected value>Select Product</option>';
-                for ($product_count = 0; $product_count < count($product_arrName); $product_count++) {
-                    echo  "<option value='" . $product_arrID[$product_count] . "'>" . $product_arrName[$product_count] . "</option>";
-                }
-                echo "</select>";
-                echo '</td>';
+                    echo  '<option disable selected value>Select Product</option>';
+                    for ($product_count = 0; $product_count < count($product_arrName); $product_count++) {
+                        //this for loop is to loop how many product count we have base on how much product name we have
+                        $selected_product = $product_arrID[$product_count] == $_POST['product'][$productrow] ? 'selected' : '';
+                        // each product in each product row will compare with the productID(which product we selected) then it will saved until the next page because we have 'selected' the product if not, it will stay empty
+                        echo  "<option value='" . $product_arrID[$product_count] . "' $selected_product>" . $product_arrName[$product_count] . "</option>";
+                        //we are choosing the product from the product name printing out by array([$product_count]), getting the value of each product which is their ID, exp: Basketball(Product_arrName) also means 1 in the product_arrID ARRAY
+                    }
+                    echo "</select>";
+                    echo '</td>';
 
 
-                echo "<td>";
-                echo '<select class="w-100 fs-4 rounded" name="quantity[]" class="form-control">';
-                echo "<option class='bg-white' disable selected value> Select Quantity</option>";
-                for ($quantity = 1; $quantity <= 10; $quantity++) {
-                    echo "<option value='$quantity'>$quantity</option>";
+                    echo "<td>";
+                    echo '<select class="w-100 fs-4 rounded" name="quantity[]" class="form-control">';
+                    echo "<option class='bg-white' disable selected value> Select Quantity</option>";
+                    for ($quantity = 1; $quantity <= 10; $quantity++) {
+                        $selected_quantity = $quantity == $_POST['quantity'][$productrow] ? 'selected' : '';
+                        echo "<option value='$quantity' $selected_quantity>$quantity</option>";
+                    }
+                    echo '</td>';
+                    echo "</tr>";
                 }
-                echo '</td>';
-                echo "</tr>";
+
+
+
+
+
+
 
                 ?>
 
