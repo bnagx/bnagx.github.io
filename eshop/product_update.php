@@ -88,7 +88,7 @@
                 $stmt->bindParam(':name', $name);
                 $stmt->bindParam(':description', $description);
                 $stmt->bindParam(':price', $price);
-                $stmt->bindParam(':product_id', $product_id);
+                $stmt->bindParam(':product_id', $id);
                 // Execute the query
                 if ($stmt->execute()) {
                     echo "<div class='alert alert-success'>Record was updated.</div>";

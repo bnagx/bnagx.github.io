@@ -45,7 +45,7 @@
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT username, email, password, confirm_password, first_name, last_name FROM customers WHERE username = ? LIMIT 0,1";
+            $query = "SELECT username, email, password, first_name, last_name, gender, dateofbirth, accountstatus FROM customers WHERE username = ? LIMIT 0,1";
             $stmt = $con->prepare($query);
 
             // this is the first question mark
@@ -61,9 +61,11 @@
             $username = $row['username'];
             $email = $row['email'];
             $password = $row['password'];
-            $confirm_password = $row['confirm_password'];
             $first_name = $row['first_name'];
             $last_name = $row['last_name'];
+            $gender = $row['gender'];
+            $dateofbirth = $row['dateofbirth'];
+            $accountstatus = $row['accountstatus'];
         }
 
         // show error
@@ -80,28 +82,124 @@
                 // in this case, it seemed like we have so many fields to pass and
                 // it is better to label them and not use question marks
                 $query = "UPDATE customers
-                  SET username=:username, email=:email, password=:password,confirm_password=:confirm_password,first_name=:first_name,last_name=:last_name WHERE username = :username";
+                  SET username=:username, email=:email,password=:new_password,first_name=:first_name,last_name=:last_name, gender=:gender,dateofbirth=:dateofbirth, accountstatus=:accountstatus  WHERE username = :username";
                 // prepare query for excecution
                 $stmt = $con->prepare($query);
                 // posted values
                 $username = htmlspecialchars(strip_tags($_POST['username']));
                 $email = htmlspecialchars(strip_tags($_POST['email']));
-                $password = htmlspecialchars(strip_tags($_POST['password']));
-                $confirm_password = htmlspecialchars(strip_tags($_POST['confirm_password']));
                 $first_name = htmlspecialchars(strip_tags($_POST['first_name']));
                 $last_name = htmlspecialchars(strip_tags($_POST['last_name']));
+                $gender = htmlspecialchars(strip_tags($_POST['gender']));
+                $old_password = htmlspecialchars(strip_tags($_POST['old_password']));
+                $new_password = htmlspecialchars(strip_tags($_POST['new_password']));
+                $confirm_password = htmlspecialchars(strip_tags($_POST['confirm_password']));
+                $date_of_birth = htmlspecialchars(strip_tags($_POST['dateofbirth']));
+                $accountstatus = htmlspecialchars(strip_tags($_POST['accountstatus']));
                 // bind the parameters
-                $stmt->bindParam(':username', $username);
+                $stmt->bindParam(':username', $id);
                 $stmt->bindParam(':email', $email);
-                $stmt->bindParam(':password', $password);
-                $stmt->bindParam(':confirm_password', $confirm_password);
+                $stmt->bindParam(':gender', $gender);
+                $stmt->bindParam(':new_password', $new_password);
                 $stmt->bindParam(':first_name', $first_name);
                 $stmt->bindParam(':last_name', $last_name);
+                $stmt->bindParam(':dateofbirth', $dateofbirth);
+                $stmt->bindParam(':accountstatus', $accountstatus);
                 // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was updated.</div>";
+
+                $flag = 0;
+                $message = ' ';
+
+                if (
+                    empty($old_password) && empty($new_password) && empty($confirm_password)
+                ) {
+                    $flag = 0;
+                    $unchange_new_password = htmlspecialchars(strip_tags($row['password']));
+                    $unchange_confirm_new_password = htmlspecialchars(strip_tags($row['password']));
+                    $stmt->bindParam(':new_password', $unchange_new_password);
+                    $stmt->bindParam(':comfirm_password', $unchange_confirm_new_password);
+                }
+
+                if (empty($email)) {
+                    $flag = 1;
+                    $message = " Please fill in all the field";
+                    $emailErr = "Email is required";
+                } else if (empty($first_name)) {
+                    $flag = 1;
+                    $message = " Please fill in all the field";
+                    $first_nameErr = "First Name is required";
+                } else if (empty($last_name)) {
+                    $flag = 1;
+                    $message = " Please fill in all the field";
+                    $last_nameErr = "Last Name is required";
+                }
+
+
+
+                // if (!empty($password) || !empty($new_password) || !empty($confirm_password)) {
+                //     if ($password != $row['password']) {
+                //         $flag = 1;
+                //         $message = " Your old password is not correct";
+                //     } else if ($password == $new_password) {
+                //         $flag = 1;
+                //         $message = "Old password must not be the same with new password.";
+                //     } else if ($new_password !== $confirm_password) {
+                //         $flag = 1;
+                //         $message = "Please Make sure the new password and confirm password are the same.";
+                //     } else if (empty($password)) {
+                //         $flag = 1;
+                //         $message = "Please input original/old password.";
+                //     } else if (empty($new_password)) {
+                //         $flag = 1;
+                //         $message = "Please input a new password.";
+                //     } else if (empty($confirm_password)) {
+                //         $flag = 1;
+                //         $message = "Please make sure password is confirmed/ same as your new password.";
+                //     }
+                // }
+
+
+                if (!empty($old_password) || !empty($new_password) || !empty($confirm_password)) {
+
+                    if (empty($old_password)) {
+                        $flag = 1;
+                        $message = "Please fill in Old password";
+                    } elseif (empty($new_password)) {
+                        $flag = 1;
+                        $message = "Please full in New password";
+                    } elseif (empty($confirm_password)) {
+                        $flag = 1;
+                        $message = "Please confirm your new password";
+                    } elseif ($old_password !== $password) {
+                        $flag = 1;
+                        $message = 'Your Old Password is Incorrect!';
+                    } elseif ($old_password == $new_password) {
+                        $flag = 1;
+                        $message = 'Old and new password cannot be the same';
+                    } elseif (!preg_match("/[a-zA-Z]/", $new_password) || !preg_match("/[0-9]/", $new_password) || !preg_match("/[a-zA-Z0-9]{8,}/", $new_password)) {
+                        $flag = 1;
+                        $message = "Password must at least 8 character and must contain number and alphabets.";
+                    } elseif ($new_password !== $confirm_password) {
+                        $flag = 1;
+                        $message = "New password and Confirm Password is NOT match.";
+                    }
+                }
+
+
+
+
+                if ($flag == 0) {
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was saved.</div>";
+
+                        echo $password;
+                    } else {
+                        echo "Unable to save record.";
+                    }
                 } else {
-                    echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    echo "<div class='alert alert-danger'>";
+                    echo $message;
+                    echo "</div>";
                 }
             }
             // show errors
@@ -116,28 +214,71 @@
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?id={$id}"); ?>" method="post">
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
-                    <td>username</td>
-                    <td><input type='text' name='username' value="<?php echo htmlspecialchars($username, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>Username</td>
+                    <td><input type='text' name='username' value="<?php echo htmlspecialchars($username, ENT_QUOTES);  ?>" class='form-control' readonly /></td>
                 </tr>
                 <tr>
-                    <td>email</td>
-                    <td><textarea name='email' class='form-control'><?php echo htmlspecialchars($email, ENT_QUOTES);  ?></textarea></td>
+                    <td>Email</td>
+                    <td><input type='text' name='email' value="<?php echo htmlspecialchars($email, ENT_QUOTES);  ?>" class='form-control' />
+                        <span>
+                            <?php if (isset($emailErr)) echo "<div class='text-danger'>*$emailErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
-                    <td>password</td>
-                    <td><input type='text' name='password' value="<?php echo htmlspecialchars($password, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>First Name</td>
+                    <td><input type='text' name='first_name' value="<?php echo htmlspecialchars($first_name, ENT_QUOTES);  ?>" class='form-control' />
+                        <span>
+                            <?php if (isset($first_nameErr)) echo "<div class='text-danger'>*$first_nameErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
-                    <td>confirm_password</td>
-                    <td><input type='text' name='confirm_password' value="<?php echo htmlspecialchars($confirm_password, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>Last Name</td>
+                    <td><input type='text' name='last_name' value="<?php echo htmlspecialchars($last_name, ENT_QUOTES);  ?>" class='form-control' />
+                        <span>
+                            <?php if (isset($last_nameErr)) echo "<div class='text-danger'>*$last_nameErr</div>  "; ?>
+                        </span>
+                    </td>
+                </tr>
+                <td>Gender</td>
+                <td>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" id="male" name='gender' value="Male" class="form-check-input" <?php if ($gender == "Male") echo 'checked' ?>> <label class="form-check-label" for="male">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" id="female" name='gender' value="Female" class="form-check-input" <?php if ($gender == "Female") echo 'checked'  ?>>
+                        <label class="form-check-label" for="female">Female</label>
+                    </div>
+                </td>
+                <tr>
+                    <td>Account Status</td>
+                    <td>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" id="Active" name='accountstatus' value="Active" class="form-check-input" <?php if ($accountstatus == "Active") echo 'checked' ?>> <label class="form-check-label" for="Active">Active</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" id="Inactive" name='accountstatus' value="Inactive" class="form-check-input" <?php if ($accountstatus == "Inactive") echo 'checked'  ?>>
+                            <label class="form-check-label" for="Inavtive">Inavtive</label>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <td>first_name</td>
-                    <td><input type='text' name='first_name' value="<?php echo htmlspecialchars($first_name, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>First Name</td>
+                    <td><input type='date' name='dateofbirth' value="<?php echo htmlspecialchars($dateofbirth, ENT_QUOTES);  ?>" class='form-control' />
+                    </td>
                 </tr>
                 <tr>
-                    <td>last_name</td>
-                    <td><input type='text' name='last_name' value="<?php echo htmlspecialchars($last_name, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>Old Password</td>
+                    <td><input type='password' name='old_password' class='form-control' /></td>
+                </tr>
+                <tr>
+                    <td>New Password</td>
+                    <td><input type='password' name='new_password' class='form-control' /></td>
+                </tr>
+                <tr>
+                    <td>Confirm New Password</td>
+                    <td><input type='password' name='confirm_password' class='form-control' /></td>
                 </tr>
                 <tr>
                     <td></td>
