@@ -87,7 +87,7 @@
                 $message = 'Please select a Username.';
             } else if ($pflag == 0 || $pflagfail > 0) {
                 $flag = 1;
-                $message = "Please Select a Product together with Quantity.";
+                $message = "Please Select a Product together with Quantity OR Save again.";
             } else if (count($_POST['product']) !== count(array_unique($_POST['product']))) { // if the product[array] count is not equal to another, then run this (meaning that same items can't appear twice, prodcut [array] should be the same)
                 $flag = 1;
                 $message = "You can't select the same product multiple times";
@@ -143,15 +143,19 @@
 
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
-                    <td>Customer Name:</td>
+                    <option value="">
+                        <td>Customer Name:</td>
+                    </option>
+
                     <?php
                     echo "<td>";
                     echo '<select class="w-100 fs-4 rounded" id="" name="cus_username">';
                     echo  '<option class="bg-white" disable selected value>Select Your Username</option>';
+                    $customer_list = $_POST ? $POST['cus_username'] : '';
                     while ($row = $cu->fetch(PDO::FETCH_ASSOC)) {
                         extract($row);
-                        $selected = $username == $_POST['cus_username'] ? 'selected' : ''; // if user input a username then it will store in selected($username == to $_POST['cus_username']), then output after save, if no then it will not store any thing which is ' '.
-                        echo "<option class='bg-white' value='" . $username . "' $selected>" . $username . "</option>";
+                        $selected_username = $row['username'] == $customer_list ? 'selected' : ''; // if user input a username then it will store in selected($username == to $_POST['cus_username']), then output after save, if no then it will not store any thing which is ' '.
+                        echo "<option class='bg-white' value='" . $username . "' $selected_username>" . $username . "</option>";
                     }
 
 
@@ -174,7 +178,6 @@
                 //if we add more than 1 row of ['product'], then post_product will increase, otherwise it will stay at 1
                 $arrayP = array('');
                 if ($_POST) {
-                    $array = $_POST['product'];
 
                     for ($y = 0; $y <= count($_POST['product']); $y++) {
                         if (empty($_POST['product'][$y])  && empty($_POST['quantity'][$y])) {
@@ -183,8 +186,9 @@
                         }
                         $arrayP = $_POST['product'];
                     }
+
                     echo '<pre>';
-                    var_dump($_POST);
+                    //  var_dump($_POST);
                     echo '</pre>';
                 }
 
@@ -220,13 +224,6 @@
                     echo '</td>';
                     echo "</tr>";
                 }
-
-
-
-
-
-
-
                 ?>
 
                 <tr>
