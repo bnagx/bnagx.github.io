@@ -61,6 +61,39 @@
                 $stmt->bindParam(':promotion', $promotion);
                 $stmt->bindParam(':manufacture', $manufacture);
                 $stmt->bindParam(':expired', $expired);
+
+                $flag = 0;
+                $message = "";
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                    if (empty($_POST["username"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $nameErr = "Name is required";
+                    }
+
+                    if (empty($_POST["email"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $descriptionErr = "Email is required";
+                    }
+
+                    if (empty($_POST["password"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $priceErr = "Password is required";
+                    }
+                }
+
+
+
+
+
+
+
+
+
                 // Execute the query
                 if ($stmt->execute()) {
                     echo "<div class='alert alert-success'>Record was saved.</div>";
@@ -81,26 +114,44 @@
                 <tr>
                     <td>Name</td>
                     <td><input type='text' name='name' class='form-control' /></td>
+                    <span>
+                        <?php if (isset($nameErr)) echo "<div class='text-danger'>*$nameErr</div>  "; ?>
+                    </span>
                 </tr>
                 <tr>
                     <td>Description</td>
                     <td><input type='text' name='description' class='form-control' /></td>
+                    <span>
+                        <?php if (isset($descriptionErr)) echo "<div class='text-danger'>*$descriptionErr</div>  "; ?>
+                    </span>
                 </tr>
                 <tr>
                     <td>Price</td>
                     <td><input type='text' name='price' class='form-control' /></td>
+                    <span>
+                        <?php if (isset($priceErr)) echo "<div class='text-danger'>*$priceErr</div>  "; ?>
+                    </span>
                 </tr>
                 <tr>
                     <td>Promotion Price</td>
                     <td><input type='text' name='promotion' class='form-control' /></td>
+                    <span>
+                        <?php if (isset($promo_priceErr)) echo "<div class='text-danger'>*$promo_priceErr</div>  "; ?>
+                    </span>
                 </tr>
                 <tr>
                     <td>manufacture date</td>
                     <td><input type='date' name='manufacture' class='form-control' /></td>
+                    <span>
+                        <?php if (isset($manu_dateErr)) echo "<div class='text-danger'>*$manu_dateErr</div>  "; ?>
+                    </span>
                 </tr>
                 <tr>
                     <td>expired date</td>
                     <td><input type='date' name='expired' class='form-control' /></td>
+                    <span>
+                        <?php if (isset($exp_dateErr)) echo "<div class='text-danger'>*$exp_dateErr</div>  "; ?>
+                    </span>
                 </tr>
 
                 <tr>

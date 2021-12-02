@@ -33,13 +33,21 @@
         try {
             $query = "SELECT order_details.orderdetail_id, order_details.order_id, order_details.product_id, order_details.quantity, products.name FROM order_details INNER JOIN products ON order_details.product_id = products.product_id WHERE order_id = :order_id ";
 
-            $stmt = $con->prepare($query);
+            //  $query2 = "SELECT customers.username FROM customers INNER JOIN order_summary ON order_summary.username WHERE username =:username";
+            $query2 = "SELECT order_summary.order_id, customers.first_name, customers.last_name FROM order_summary  INNER JOIN customers ON order_summary.username= customers.username ORDER BY order_id = $id ";
 
+            $stmt = $con->prepare($query);
+            $stmt2 = $con->prepare($query2);
             // Bind the parameter
             $stmt->bindParam(":order_id", $id);
-
             // execute our query
             $stmt->execute();
+            $stmt2->execute();
+
+            $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+            $first_name = $row2['first_name'];
+            $last_name = $row2['last_name'];
+
 
             $num = $stmt->rowCount();
 
@@ -49,11 +57,16 @@
 
                 //creating our table heading
                 echo "<tr>";
-                echo "<th>orderdetail_id</th>";
-                echo "<th>order_id</th>";
-                echo "<th>product_id</th>";
-                echo "<th>quantity</th>";
-                echo "<th>name</th>";
+
+                echo "<th>order_id</th> <td> $id</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th> Customer Name</th><td>" . $first_name . "" . $last_name . "</td>";
+                echo "</tr>";
+                echo "<th>Product Name </th>";
+                echo "<th>Product ID</th>";
+                echo "<th>Quantity</th>";
+                // echo "<th>Username</th>";
                 echo "</tr>";
 
                 // retrieve our table contents
@@ -61,11 +74,9 @@
                     extract($row);
                     // creating new table row per record
                     echo "<tr>";
-                    echo "<td>{$orderdetail_id}</td>";
-                    echo "<td>{$order_id}</td>";
+                    echo "<td>{$name}</td>";
                     echo "<td>{$product_id}</td>";
                     echo "<td>{$quantity}</td>";
-                    echo "<td>{$name}</td>";
                     echo "</tr>";
                 }
 
