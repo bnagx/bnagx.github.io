@@ -91,9 +91,9 @@
                 $first_name = htmlspecialchars(strip_tags($_POST['first_name']));
                 $last_name = htmlspecialchars(strip_tags($_POST['last_name']));
                 $gender = htmlspecialchars(strip_tags($_POST['gender']));
-                $old_password = htmlspecialchars(strip_tags($_POST['old_password']));
-                $new_password = htmlspecialchars(strip_tags($_POST['new_password']));
-                $confirm_password = htmlspecialchars(strip_tags($_POST['confirm_password']));
+                $old_password = ($_POST['old_password']);
+                $new_password = ($_POST['new_password']);
+                $confirm_password = ($_POST['confirm_password']);
                 $date_of_birth = htmlspecialchars(strip_tags($_POST['dateofbirth']));
                 $accountstatus = htmlspecialchars(strip_tags($_POST['accountstatus']));
                 // bind the parameters
@@ -114,8 +114,8 @@
                     empty($old_password) && empty($new_password) && empty($confirm_password)
                 ) {
                     $flag = 0;
-                    $unchange_new_password = htmlspecialchars(strip_tags($row['password']));
-                    $unchange_confirm_new_password = htmlspecialchars(strip_tags($row['password']));
+                    $unchange_new_password = ($row['password']);
+                    $unchange_confirm_new_password = ($row['password']);
                     $stmt->bindParam(':new_password', $unchange_new_password);
                     $stmt->bindParam(':comfirm_password', $unchange_confirm_new_password);
                 }

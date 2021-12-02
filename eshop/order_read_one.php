@@ -66,17 +66,11 @@
                     echo "<td>{$product_id}</td>";
                     echo "<td>{$quantity}</td>";
                     echo "<td>{$name}</td>";
-                    echo "<td>";
-
-                    echo "</td>";
                     echo "</tr>";
                 }
 
-
                 // end table
                 echo "</table>";
-            } else {
-                echo "<div class='alert alert-danger'>No records found.</div>";
             }
         }
 
