@@ -2,55 +2,46 @@
 <html>
 
 <head>
-    <title>Create Product</title>
+    <title>PDO - Create a Record - PHP CRUD Tutorial</title>
     <!-- Latest compiled and minified Bootstrap CSS -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-md-light bg-dark">
         <div class="container-fluid">
-
-            <ul class="nav navbar-nav">
-                <li><a href="home.php">Home</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Products
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-primary" href="product_create.php">Create Product</a></li>
-                        <li><a class="dropdown-item text-primary" href="product_read.php">Read Product</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Customers
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-primary" href="customer_create.php">Create Customers</a></li>
-                        <li><a class="dropdown-item text-primary" href="customer_read.php">Read Customers</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Orders
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-primary" href="order_create.php">Create Order</a></li>
-                        <li><a class="dropdown-item text-primary" href="order_read.php">Read Orders</a></li>
-                    </ul>
-                </li>
-                <li><a href="contactus.php">Contact Us</a></li>
-
-            </ul>
+            <a class="navbar-brand text-light" href="home.php">Hanson1030</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="home.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary" href="product_read.php">Read Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary" href="product_create.php">Create Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary" href="customer_read.php">Read Customer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary" href="customer_create.php">Create Customer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary" href="contact_us.php">Contact Us</a>
+                    </li>
+                </ul>
+                <span class="navbar-text d-flex">
+                    <a class="nav-link text-secondary" href="order_read.php">Read Order</a>
+                    <a class="nav-link text-secondary" href="order_create.php">Create Order</a>
+                </span>
+            </div>
         </div>
     </nav>
-
-
     <!-- container -->
     <div class="container">
 
@@ -105,10 +96,10 @@
                 $message = 'Please select Username.';
             } elseif ($product_flag < 1) {
                 $flag = 1;
-                $message = 'Please select the at least one prouct with quantity';
+                $message = 'Please select the at least one prouct and the associated quantity';
             } elseif ($fail_flag > 0) {
                 $flag = 1;
-                $message = 'Please enter product with quantity OR SAVE again';
+                $message = 'Please enter prouct and the associated quantity';
             } elseif (count($_POST['product']) !== count(array_unique($_POST['product']))) {
                 $flag = 1;
                 $message = 'Duplicate product is not allowed.';
@@ -214,13 +205,13 @@
                     }
                     $arrayPost_product = $_POST['product'];
                 }
-                //echo '<pre>';
+                echo '<pre>';
                 //var_dump($_POST);
-                //echo '<pre>';
+                echo '<pre>';
 
                 //for ($product_row = 0; $product_row < $post_product; $product_row++) {
                 foreach ($arrayPost_product as $product_row => $product_ID) {
-                    echo "<tr class='productrow'>";
+                    echo "<tr class='productRow'>";
                     echo '<td>
                        <select class="fs-4 rounded" name="product[]">';
                     echo  "<option value=''>--Select--</option>";
@@ -275,22 +266,28 @@
 
     <!-- end .container -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
     <script>
         document.addEventListener('click', function(event) {
             if (event.target.matches('.add_one')) {
-                var element = document.querySelector('.productrow');
+                var element = document.querySelector('.productRow');
                 var clone = element.cloneNode(true);
                 element.after(clone);
             }
             if (event.target.matches('.delete_one')) {
-                var total = document.querySelectorAll('.productrow').length;
+                var total = document.querySelectorAll('.productRow').length;
                 if (total > 1) {
-                    var element = document.querySelector('.productrow');
+                    var element = document.querySelector('.productRow');
                     element.remove(element);
                 }
             }
         }, false);
+
+        function incrementValue() {
+            var value = parseInt(document.getElementById('number').value, 10);
+            value = isNaN(value) ? 0 : value;
+            value++;
+            document.getElementById('number').value = value;
+        }
     </script>
 </body>
 

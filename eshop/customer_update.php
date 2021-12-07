@@ -32,7 +32,7 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>Update Product</h1>
+            <h1>Update Customers</h1>
         </div>
         <?php
         // get passed parameter value, in this case, the record ID
@@ -94,7 +94,7 @@
                 $old_password = ($_POST['old_password']);
                 $new_password = ($_POST['new_password']);
                 $confirm_password = ($_POST['confirm_password']);
-                $date_of_birth = htmlspecialchars(strip_tags($_POST['dateofbirth']));
+                $dateofbirth = htmlspecialchars(strip_tags($_POST['dateofbirth']));
                 $accountstatus = htmlspecialchars(strip_tags($_POST['accountstatus']));
                 // bind the parameters
                 $stmt->bindParam(':username', $id);
@@ -192,7 +192,7 @@
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was saved.</div>";
 
-                        echo $password;
+                        //echo $password;
                     } else {
                         echo "Unable to save record.";
                     }
@@ -242,9 +242,10 @@
                     </td>
                 </tr>
                 <td>Gender</td>
+
                 <td>
                     <div class="form-check form-check-inline">
-                        <input type="radio" id="male" name='gender' value="Male" class="form-check-input" <?php if ($gender == "Male") echo 'checked' ?>> <label class="form-check-label" for="male">Male</label>
+                        <input type="radio" id="male" name='gender' value="Male" class="form-check-input unchecked" <?php if ($gender == "Male") echo 'checked' ?>> <label class="form-check-label" for="male">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input type="radio" id="female" name='gender' value="Female" class="form-check-input" <?php if ($gender == "Female") echo 'checked'  ?>>
@@ -264,7 +265,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>First Name</td>
+                    <td>Date of Birth</td>
                     <td><input type='date' name='dateofbirth' value="<?php echo htmlspecialchars($dateofbirth, ENT_QUOTES);  ?>" class='form-control' />
                     </td>
                 </tr>

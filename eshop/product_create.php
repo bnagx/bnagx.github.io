@@ -17,13 +17,35 @@
 
             <ul class="nav navbar-nav">
                 <li><a href="home.php">Home</a></li>
-                <li><a href="customer_create.php">Create Customer</a></li>
-                <li class="active"><a href="product_create.php">Create Products</a></li>
-                <li><a href="order_create.php">Create Order</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Products
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-primary" href="product_create.php">Create Product</a></li>
+                        <li><a class="dropdown-item text-primary" href="product_read.php">Read Product</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Customers
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-primary" href="customer_create.php">Create Customers</a></li>
+                        <li><a class="dropdown-item text-primary" href="customer_read.php">Read Customers</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Orders
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-primary" href="order_create.php">Create Order</a></li>
+                        <li><a class="dropdown-item text-primary" href="order_read.php">Read Orders</a></li>
+                    </ul>
+                </li>
                 <li><a href="contactus.php">Contact Us</a></li>
-                <li><a href="customer_read.php">Read Customers</a></li>
-                <li><a href="product_read.php">Read Products</a></li>
-                <li><a href="order_read.php">Read Orders</a></li>
+
             </ul>
         </div>
     </nav>
@@ -66,39 +88,85 @@
                 $message = "";
 
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-                    if (empty($_POST["username"])) {
+                    if (empty($_POST["name"])) {
                         $flag = 1;
                         $message = "Please fill in every field.";
                         $nameErr = "Name is required";
+                    } else {
+                        $name = ($_POST["name"]);
                     }
 
-                    if (empty($_POST["email"])) {
+                    if (empty($_POST["description"])) {
                         $flag = 1;
                         $message = "Please fill in every field.";
-                        $descriptionErr = "Email is required";
+                        $descriptionErr = "Description is required";
+                    } else {
+                        $description = trim(htmlspecialchars($_POST["description"]));
                     }
 
-                    if (empty($_POST["password"])) {
+                    if (empty($_POST["price"])) {
                         $flag = 1;
                         $message = "Please fill in every field.";
-                        $priceErr = "Password is required";
+                        $priceErr = "price is required";
+                    } else {
+                        $price = ($_POST["price"]);
+                    }
+
+                    if (empty($_POST["promotion"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $promo_priceErr = "Promotion price is required";
+                    } else {
+                        $promo_price = ($_POST["promotion"]);
+                    }
+
+                    if (empty($_POST["manufacture"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $manu_dateErr = "Manufacture date is required";
+                    } else {
+                        $manufacture = ($_POST["manufacture"]);
+                    }
+
+                    if (empty($_POST["expired"])) {
+                        $flag = 1;
+                        $message = "Please fill in every field.";
+                        $exp_dateErr = "Expired date is required";
+                    } else {
+                        $expired = ($_POST["expired"]);
+                    }
+
+                    if (!is_numeric($price) || !is_numeric($promotion)) {
+                        $flag = 1;
+                        $message = "Price must be numerical.";
+                    }
+
+                    if ($price < 0 || $promotion < 0) {
+                        $flag = 1;
+                        $message = "Price cannot be negative.";
+                    }
+
+                    if ($promotion > $price) {
+                        $flag = 1;
+                        $message = "Error: Promotion Price cannot bigger than Original Price";
+                    }
+
+                    if ($manufacture > $expired) {
+                        $flag = 1;
+                        $message = "Error: Expired date must be after Manufacture date";
                     }
                 }
 
-
-
-
-
-
-
-
-
-                // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was saved.</div>";
+                if ($flag == 0) {
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was saved.</div>";
+                    } else {
+                        echo "Unable to save record.";
+                    }
                 } else {
-                    echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                    echo "<div class='alert alert-danger'>";
+                    echo $message;
+                    echo "</div>";
                 }
             }
             // show error
@@ -113,52 +181,57 @@
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>Name</td>
-                    <td><input type='text' name='name' class='form-control' /></td>
-                    <span>
-                        <?php if (isset($nameErr)) echo "<div class='text-danger'>*$nameErr</div>  "; ?>
-                    </span>
+                    <td><input type='text' name='name' class='form-control' />
+                        <span>
+                            <?php if (isset($nameErr)) echo "<div class='text-danger'>*$nameErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Description</td>
-                    <td><input type='text' name='description' class='form-control' /></td>
-                    <span>
-                        <?php if (isset($descriptionErr)) echo "<div class='text-danger'>*$descriptionErr</div>  "; ?>
-                    </span>
+                    <td><textarea name='description' class='form-control'></textarea>
+                        <span>
+                            <?php if (isset($descriptionErr)) echo "<div class='text-danger'>*$descriptionErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Price</td>
-                    <td><input type='text' name='price' class='form-control' /></td>
-                    <span>
-                        <?php if (isset($priceErr)) echo "<div class='text-danger'>*$priceErr</div>  "; ?>
-                    </span>
+                    <td><input type='text' name='price' class='form-control' />
+                        <span>
+                            <?php if (isset($priceErr)) echo "<div class='text-danger'>*$priceErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Promotion Price</td>
-                    <td><input type='text' name='promotion' class='form-control' /></td>
-                    <span>
-                        <?php if (isset($promo_priceErr)) echo "<div class='text-danger'>*$promo_priceErr</div>  "; ?>
-                    </span>
+                    <td><input type='text' name='promotion' class='form-control' />
+                        <span>
+                            <?php if (isset($promo_priceErr)) echo "<div class='text-danger'>*$promo_priceErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
-                    <td>manufacture date</td>
-                    <td><input type='date' name='manufacture' class='form-control' /></td>
-                    <span>
-                        <?php if (isset($manu_dateErr)) echo "<div class='text-danger'>*$manu_dateErr</div>  "; ?>
-                    </span>
+                    <td>Manufacture Date</td>
+                    <td><input type='date' name='manufacture' class='form-control' />
+                        <span>
+                            <?php if (isset($manu_dateErr)) echo "<div class='text-danger'>*$manu_dateErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
-                    <td>expired date</td>
-                    <td><input type='date' name='expired' class='form-control' /></td>
-                    <span>
-                        <?php if (isset($exp_dateErr)) echo "<div class='text-danger'>*$exp_dateErr</div>  "; ?>
-                    </span>
+                    <td>Expired Date</td>
+                    <td><input type="date" name='expired' class='form-control' />
+                        <span>
+                            <?php if (isset($exp_dateErr)) echo "<div class='text-danger'>*$exp_dateErr</div>  "; ?>
+                        </span>
+                    </td>
                 </tr>
-
                 <tr>
                     <td></td>
                     <td>
                         <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                        <a href="product_read.php" class='btn btn-danger'>Back to read products</a>
                     </td>
                 </tr>
             </table>

@@ -17,15 +17,38 @@
 <body>
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
+
             <ul class="nav navbar-nav">
                 <li><a href="home.php">Home</a></li>
-                <li><a href="customer_create.php">Create Customer</a></li>
-                <li><a href="product_create.php">Create Products</a></li>
-                <li><a href="order_create.php">Create Order</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Products
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-primary" href="product_create.php">Create Product</a></li>
+                        <li><a class="dropdown-item text-primary" href="product_read.php">Read Product</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Customers
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-primary" href="customer_create.php">Create Customers</a></li>
+                        <li><a class="dropdown-item text-primary" href="customer_read.php">Read Customers</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Orders
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-primary" href="order_create.php">Create Order</a></li>
+                        <li><a class="dropdown-item text-primary" href="order_read.php">Read Orders</a></li>
+                    </ul>
+                </li>
                 <li><a href="contactus.php">Contact Us</a></li>
-                <li><a href="customer_read.php">Read Customers</a></li>
-                <li><a href="product_read.php">Read Products</a></li>
-                <li class="active"><a href="order_read.php">Read Orders</a></li>
+
             </ul>
         </div>
     </nav>
