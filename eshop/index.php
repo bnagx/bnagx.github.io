@@ -67,10 +67,10 @@
 
 
         <!-- html form here where the product information will be entered -->
-        <div class="text-center  d-flex align-items-center h-100">
+        <div class="text-center d-flex align-items-center h-150">
 
-            <div class="container w-50 w-md-25">
-                <h1>LOGIN HERE</h1>
+            <div class="mb-3">
+                <h1>Login Eshop</h1>
                 <form action="" method="post">
                     <div class="form-group">
                         <label>Username</label>

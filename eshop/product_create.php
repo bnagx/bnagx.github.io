@@ -138,20 +138,15 @@
 
                     if (!is_numeric($price) || !is_numeric($promotion)) {
                         $flag = 1;
-                        $message = "Price must be numerical.";
-                    }
-
-                    if ($price < 0 || $promotion < 0) {
+                        $message = "Please Fill in every field & Price must be numerical.";
+                    } elseif ($price < 0 || $promotion < 0) {
                         $flag = 1;
                         $message = "Price cannot be negative.";
                     }
-
                     if ($promotion > $price) {
                         $flag = 1;
                         $message = "Error: Promotion Price cannot bigger than Original Price";
-                    }
-
-                    if ($manufacture > $expired) {
+                    } elseif ($manufacture > $expired) {
                         $flag = 1;
                         $message = "Error: Expired date must be after Manufacture date";
                     }
