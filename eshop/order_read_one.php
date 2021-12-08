@@ -31,25 +31,38 @@
 
         // read current record's data
         try {
-            $query = "SELECT order_details.orderdetail_id, order_details.order_id, order_details.product_id, order_details.quantity, products.name FROM order_details INNER JOIN products ON order_details.product_id = products.product_id WHERE order_id = :order_id ";
-
-            //  $query2 = "SELECT customers.username FROM customers INNER JOIN order_summary ON order_summary.username WHERE username =:username";
-            $query2 = "SELECT order_summary.order_id, customers.first_name, customers.last_name FROM order_summary  INNER JOIN customers ON order_summary.username= customers.username ORDER BY order_id = $id ";
+            $query = "SELECT order_details.orderdetail_id, order_details.order_id, order_details.product_id, order_details.quantity, products.name FROM order_details 
+            INNER JOIN products 
+            ON order_details.product_id = products.product_id 
+            WHERE order_id = :order_id ";
 
             $stmt = $con->prepare($query);
-            $stmt2 = $con->prepare($query2);
-            // Bind the parameter
-            $stmt->bindParam(":order_id", $id);
-            // execute our query
-            $stmt->execute();
-            $stmt2->execute();
 
+            $stmt->bindParam(":order_id", $id);
+
+            $stmt->execute();
+
+            $num = $stmt->rowCount();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            //  $query2 = "SELECT customers.username FROM customers INNER JOIN order_summary ON order_summary.username WHERE username =:username";
+            $query2 = "SELECT order_summary.order_id, customers.first_name, customers.last_name, customers.username
+            FROM order_summary  
+            INNER JOIN customers 
+            ON order_summary.username= customers.username 
+            ORDER BY order_id = $id ";
+
+
+            $stmt2 = $con->prepare($query2);
+            $stmt2->execute();
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+            $username = $row2['username'];
             $first_name = $row2['first_name'];
             $last_name = $row2['last_name'];
 
 
-            $num = $stmt->rowCount();
+
 
             if ($num > 0) {
 
@@ -61,7 +74,8 @@
                 echo "<th>order_id</th> <td> $id</td>";
                 echo "</tr>";
                 echo "<tr>";
-                echo "<th> Customer Name</th><td>" . $first_name . "" . $last_name . "</td>";
+                echo "<th> Customer Name</th><td> $username </td>";
+                //echo "<th> Customer Name</th><td>" . $first_name . "" . $last_name . "</td>";
                 echo "</tr>";
                 echo "<th>Product Name </th>";
                 echo "<th>Product ID</th>";

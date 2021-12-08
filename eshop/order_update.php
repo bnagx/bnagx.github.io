@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title> Product update </title>
+    <title> Order update </title>
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -78,7 +78,8 @@
                 // in this case, it seemed like we have so many fields to pass and
                 // it is better to label them and not use question marks
                 $query = "UPDATE order_details
-                  SET orderdetail_id=:orderdetail_id, order_id=:order_id, product_id=:product_id, quantity=:quantity WHERE orderdetail_id = :orderdetail_id";
+                  SET orderdetail_id=:orderdetail_id, order_id=:order_id, product_id=:product_id, quantity=:quantity 
+                  WHERE orderdetail_id = :orderdetail_id";
                 // prepare query for excecution
                 $stmt = $con->prepare($query);
                 // posted values
@@ -87,6 +88,7 @@
                 $product_id = ($_POST['product_id']);
                 $quantity = ($_POST['quantity']);
                 // bind the parameters
+                $stmt->bindParam(':orderdetail_id', $id);
                 $stmt->bindParam(':order_id', $order_id);
                 $stmt->bindParam(':product_id', $product_id);
                 $stmt->bindParam(':quantity', $quantity);
