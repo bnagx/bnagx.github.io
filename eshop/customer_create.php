@@ -70,7 +70,7 @@
                 $stmt = $con->prepare($query);
                 $username = $_POST['username'];
                 $email = $_POST['email'];
-                $password = md5($_POST['password']);
+                $password = ($_POST['password']);
                 $confirm_password = $_POST['confirm_password'];
                 $first_name = $_POST['first_name'];
                 $last_name = $_POST['last_name'];
