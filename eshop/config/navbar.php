@@ -46,16 +46,10 @@
                 </li>
                 <li><a href="contactus.php">Contact Us</a></li>
 
+                <span class="navbar-text d-flex">
+                    <a class="nav-link text-secondary" href="logout.php">Log out</a>
+                </span>
+
             </ul>
         </div>
     </nav>
-
-
-
-
-</body>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
-
-
-</html>

@@ -1,16 +1,7 @@
-<!DOCTYPE HTML>
-<html>
+<?php
+include 'config/navbar.php';
+?>
 
-<head>
-    <title>Read one order</title>
-    <!-- Latest compiled and minified Bootstrap CSS -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-</head>
 
 <body>
 
@@ -44,7 +35,7 @@
 
             $num = $stmt->rowCount();
 
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
 
             //  $query2 = "SELECT customers.username FROM customers INNER JOIN order_summary ON order_summary.username WHERE username =:username";
             $query2 = "SELECT order_summary.order_id, customers.first_name, customers.last_name, customers.username
@@ -56,6 +47,7 @@
 
             $stmt2 = $con->prepare($query2);
             $stmt2->execute();
+
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
             $username = $row2['username'];
             $first_name = $row2['first_name'];
