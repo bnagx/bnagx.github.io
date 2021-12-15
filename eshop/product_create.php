@@ -1,3 +1,11 @@
+<!--ID : 2020052 -->
+<!--Name : WAN HAO XIN   -->
+<!--Topic : Eshop Product Create to insert the data in database(PDO Method)-->
+
+
+
+
+
 <?php
 include 'config/navbar.php';
 ?>

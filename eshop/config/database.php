@@ -1,3 +1,8 @@
+<!--ID : 2020052 -->
+<!--Name : WAN HAO XIN   -->
+<!--Topic : Eshop Include database -->
+
+
 <?php
 // used to connect to the database
 $host = "localhost";
