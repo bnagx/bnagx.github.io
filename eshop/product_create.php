@@ -12,16 +12,23 @@ include 'config/navbar.php';
     <!-- html form to create product will be here -->
     <!-- PHP insert code will be here -->
     <?php
+
+    include 'config/database.php';
+    $query_category = "SELECT * FROM categories ORDER BY category_id ASC";
+    $stmt_category = $con->prepare($query_category);
+    $stmt_category->execute();
+
+
     if ($_POST) {
-        // include database connection
-        include 'config/database.php';
+
         try {
             // insert query
-            $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired";
+            $query = "INSERT INTO products SET name=:name, description=:description,category_id=:category_id, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired";
             // prepare query for execution
             $stmt = $con->prepare($query);
             $name = $_POST['name'];
             $description = $_POST['description'];
+            $category_id = $_POST['category_id'];
             $price = $_POST['price'];
             $promotion = $_POST['promotion'];
             $manufacture = $_POST['manufacture'];
@@ -29,6 +36,7 @@ include 'config/navbar.php';
             // bind the parameters
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':category_id', $category_id);
             $stmt->bindParam(':price', $price);
             $created = date('Y-m-d H:i:s'); // get the current date and time
             $stmt->bindParam(':created', $created);
@@ -54,6 +62,11 @@ include 'config/navbar.php';
                     $descriptionErr = "Description is required";
                 } else {
                     $description = trim(htmlspecialchars($_POST["description"]));
+                }
+
+                if (empty($_POST["category_id"])) {
+                    $message = "Category cannot be empty";
+                    $flag = 1;
                 }
 
                 if (empty($_POST["price"])) {
@@ -142,6 +155,23 @@ include 'config/navbar.php';
                     </span>
                 </td>
             </tr>
+
+            <tr>
+                <td>Category</td>
+                <td>
+                    <select class="form-control form-select fs-6 rounded" name="category_id">
+                        <option value="">--Category--</option>
+                        <?php
+                        while ($row = $stmt_category->fetch(PDO::FETCH_ASSOC)) {
+                            extract($row);
+                            // $selected_category = $row['category_id'] == $_POST['category_id'] ? 'selected' : '';
+                            echo "<option class='bg-white' value='{$category_id}'>$category_name</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+
             <tr>
                 <td>Price</td>
                 <td><input type='text' name='price' class='form-control' />
@@ -150,6 +180,7 @@ include 'config/navbar.php';
                     </span>
                 </td>
             </tr>
+
             <tr>
                 <td>Promotion Price</td>
                 <td><input type='text' name='promotion' class='form-control' />

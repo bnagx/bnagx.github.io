@@ -1,218 +1,149 @@
-<!DOCTYPE HTML>
-<html>
+<?php
+include 'config/database.php';
+include 'config/navbar.php';
 
-<head>
-    <title>Create Product</title>
-    <!-- Latest compiled and minified Bootstrap CSS -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
+$tableContent = '';
+$category_option = '';
+// delete message prompt will be here
 
-<body>
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
+// select all data
 
-            <ul class="nav navbar-nav">
-                <li><a href="home.php">Home</a></li>
-                <li><a href="customer_create.php">Create Customer</a></li>
-                <li class="active"><a href="product_create.php">Create Products</a></li>
-                <li><a href="order_create.php">Create Order</a></li>
-                <li><a href="contactus.php">Contact Us</a></li>
-                <li><a href="customer_read.php">Read Customers</a></li>
-                <li><a href="product_read.php">Read Products</a></li>
-                <li><a href="order_read.php">Read Orders</a></li>
-            </ul>
-        </div>
-    </nav>
+$query_category = "SELECT * FROM categories ORDER BY category_id ASC";
+$stmt_category = $con->prepare($query_category);
+$stmt_category->execute();
 
 
-    <!-- container -->
-    <div class="container">
-        <div class="page-header">
-            <h1>Create Product</h1>
-        </div>
+$query = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+FROM categories
+INNER JOIN products ON products.category_id = categories.category_id ORDER BY product_id DESC";
+$stmt = $con->prepare($query);
+$stmt->execute();
+$num = $stmt->rowCount();
+$table = $stmt->fetchAll();
 
-        <!-- html form to create product will be here -->
-        <!-- PHP insert code will be here -->
-        <?php
-        if ($_POST) {
-            // include database connection
-            include 'config/database.php';
-            try {
-                // insert query
-                $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion_price, manufacture_date=:manufacture_date, expired_date=:expired_date";
-                // prepare query for execution
-                $stmt = $con->prepare($query);
-                $name = $_POST['name'];
-                $description = $_POST['description'];
-                $price = $_POST['price'];
-                $promotion_price = $_POST['promotion_price'];
-                $manufacture_date = $_POST['manufacture_date'];
-                $expired_date = $_POST['expired_date'];
-                // bind the parameters
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':price', $price);
-                $created = date('Y-m-d H:i:s'); // get the current date and time
-                $stmt->bindParam(':created', $created);
-                $stmt->bindParam(':promotion_price', $promotion_price);
-                $stmt->bindParam(':manufacture_date', $manufacture_date);
-                $stmt->bindParam(':expired_date', $expired_date);
+foreach ($table as $row) {
+    $tableContent = $tableContent . "<tr>" .
+        "<td>" . $row['product_id'] . "</td>"
+        . "<td>" . $row['name'] . "</td>"
+        . "<td>" . $row['description'] . "</td>"
+        . "<td>" . $row['category_name'] . "</td>"
+        . "<td>" . $row['price'] . "</td>"
+        . "<td class='d-flex justify-content-between'>"
+        . "<a href='product_read_one.php?id={$row['product_id']}' class='btn btn-info'>Read</a>"
+        . "<a href='product_update.php?id={$row['product_id']}' class='btn btn-primary'>Edit</a>"
+        . "<a href='#' onclick='delete_product({$row['product_id']});'  class='btn btn-danger'>Delete</a>"
+        . "</td></tr>";
+}
 
-                $flag = 0;
-                $message = "";
+if (isset($_POST['search'])) {
 
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    if (empty($_POST["name"])) {
-                        $flag = 1;
-                        $message = "Please fill in every field.";
-                        $nameErr = "Name is required";
-                    } else {
-                        $name = ($_POST["name"]);
-                    }
+    $category_option = $_POST['category'];
 
-                    if (empty($_POST["description"])) {
-                        $flag = 1;
-                        $message = "Please fill in every field.";
-                        $descriptionErr = "Description is required";
-                    } else {
-                        $description = trim(htmlspecialchars($_POST["description"]));
-                    }
+    $tableContent = '';
 
-                    if (empty($_POST["price"])) {
-                        $flag = 1;
-                        $message = "Please fill in every field.";
-                        $priceErr = "Price is required";
-                    } else {
-                        $price = ($_POST["price"]);
-                    }
+    if ($category_option != "all_category") {
+        $selectstmt = $con->prepare('SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+        FROM categories
+        INNER JOIN products ON products.category_id = categories.category_id WHERE category_name LIKE :category_name ORDER BY product_id DESC');
+        $selectstmt->execute(array(':category_name' => $category_option));
+        $rowcount = $selectstmt->rowCount();
+        $table = $selectstmt->fetchAll();
 
-                    if (empty($_POST["promotion_price"])) {
-                        $flag = 1;
-                        $message = "Please fill in every field.";
-                        $promo_priceErr = "Promotion Price is required";
-                    } else {
-                        $promo_price = ($_POST["promotion_price"]);
-                    }
-
-                    if (empty($_POST["manufacture_date"])) {
-                        $flag = 1;
-                        $message = "Please fill in every field.";
-                        $manu_dateErr = "manufacture_date is required";
-                    } else {
-                        $manu_date = ($_POST["manufacture_date"]);
-                    }
-
-                    if (empty($_POST["expired_date"])) {
-                        $flag = 1;
-                        $message = "Please fill in every field.";
-                        $exp_dateErr = "Expired date is required";
-                    } else {
-                        $exp_date = ($_POST["expired_date"]);
-                    }
-
-                    if (!is_numeric($price) || !is_numeric($promotion_price)) {
-                        $flag = 1;
-                        $message = "Price / Promotion Price must be numerical.";
-                    } elseif ($price < 0 || $promotion_price < 0) {
-                        $flag = 1;
-                        $message = "Price cannot be negative.";
-                    } elseif ($promotion_price > $price) {
-                        $flag = 1;
-                        $message = "Error: Promo Price must be cheaper than Normal Price";
-                    } elseif ($manufacture_date > $expired_date) {
-                        $flag = 1;
-                        $message = "Error: Expired date must be after Manufacture date";
-                    }
-                }
-
-
-
-                if ($flag == 0) {
-                    if ($stmt->execute()) {
-                        echo "<div class='alert alert-success'>Record was saved.</div>";
-                    } else {
-                        echo "Unable to save record.";
-                    }
-                } else {
-                    echo "<div class='alert alert-danger'>";
-                    echo $message;
-                    echo "</div>";
-                }
-            }
-            // show error
-            catch (PDOException $exception) {
-                die('ERROR: ' . $exception->getMessage());
-            }
+        foreach ($table as $row) {
+            $tableContent = $tableContent . "<tr>" .
+                "<td>" . $row['product_id'] . "</td>"
+                . "<td>" . $row['name'] . "</td>"
+                . "<td>" . $row['description'] . "</td>"
+                . "<td>" . $row['category_name'] . "</td>"
+                . "<td>" . $row['price'] . "</td>"
+                . "<td class='d-flex justify-content-between'>"
+                . "<a href='product_read_one.php?id={$row['product_id']}' class='btn btn-info'>Read</a>"
+                . "<a href='product_update.php?id={$row['product_id']}' class='btn btn-primary'>Edit</a>"
+                . "<a href='#' onclick='delete_product({$row['product_id']});'  class='btn btn-danger'>Delete</a>"
+                . "</td></tr>";
         }
-        ?>
+    }
 
-        <!-- html form here where the product information will be entered -->
-        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
-            <table class='table table-hover table-responsive table-bordered'>
-                <tr>
-                    <td>Name</td>
-                    <td><input type='text' name='name' class='form-control' />
-                        <span>
-                            <?php if (isset($nameErr)) echo "<div class='text-danger'>*$nameErr</div>  "; ?>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Description</td>
-                    <td><textarea name='description' class='form-control'></textarea>
-                        <span>
-                            <?php if (isset($descriptionErr)) echo "<div class='text-danger'>*$descriptionErr</div>  "; ?>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Price</td>
-                    <td><input type='text' name='price' class='form-control' />
-                        <span>
-                            <?php if (isset($priceErr)) echo "<div class='text-danger'>*$priceErr</div>  "; ?>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Promotion Price</td>
-                    <td><input type='text' name='promotion_price' class='form-control' />
-                        <span>
-                            <?php if (isset($promo_priceErr)) echo "<div class='text-danger'>*$promo_priceErr</div>  "; ?>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Manufacture Date</td>
-                    <td><input type='date' name='manufacture_date' class='form-control' />
-                        <span>
-                            <?php if (isset($manu_dateErr)) echo "<div class='text-danger'>*$manu_dateErr</div>  "; ?>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Expired Date</td>
-                    <td><input type="date" name='expired_date' class='form-control' />
-                        <span>
-                            <?php if (isset($exp_dateErr)) echo "<div class='text-danger'>*$exp_dateErr</div>  "; ?>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href="product_read.php" class='btn btn-danger'>Back to read products</a>
-                    </td>
-                </tr>
-            </table>
-        </form>
+    if ($category_option == "all_category") {
+
+        $category_option = $_POST['category'];
+
+        $tableContent = '';
+
+        $selectstmt = $con->prepare('SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+        FROM categories
+        INNER JOIN products ON products.category_id = categories.category_id ORDER BY product_id DESC');
+        $selectstmt->execute();
+        $rowcount = $selectstmt->rowCount();
+        $table = $selectstmt->fetchAll();
+
+        foreach ($table as $row) {
+            $tableContent = $tableContent . "<tr>" .
+                "<td>" . $row['product_id'] . "</td>"
+                . "<td>" . $row['name'] . "</td>"
+                . "<td>" . $row['description'] . "</td>"
+                . "<td>" . $row['category_name'] . "</td>"
+                . "<td>" . $row['price'] . "</td>"
+                . "<td class='d-flex justify-content-between'>"
+                . "<a href='product_read_one.php?id={$row['product_id']}' class='btn btn-info'>Read</a>"
+                . "<a href='product_update.php?id={$row['product_id']}' class='btn btn-primary'>Edit</a>"
+                . "<a href='#' onclick='delete_product({$row['product_id']});'  class='btn btn-danger'>Delete</a>"
+                . "</td></tr>";
+        }
+    }
+}
+?>
+
+
+
+
+
+<div class="container">
+    <div class="page-header">
+        <h1>Read Products</h1>
     </div>
-    <!-- end .container -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <br><br>
+    <a href='product_create.php' class='btn btn-primary'>Create New Product</a>
+    <br><br>
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
+        <div class="d-flex justify-content-center">
+            <select name="category">
+                <option value="all_category">--ALL Category--</option>
+                <?php
+                while ($row = $stmt_category->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row);
+                    echo "<option class='bg-white' value='$category_name'>$category_name</option>";
+                }
+                ?>
+            </select>
+            <input type="submit" value="search" name="search" class="btn-sm btn btn-danger col-1" />
+        </div>
+
+        <br><br>
+
+
+        <table class='table table-hover table-responsive table-bordered'>
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+
+            <?php
+            //check if more than 0 record found
+            echo $tableContent;
+            ?>
+
+        </table>
+    </form>
+</div> <!-- end .container -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<!-- confirm delete record will be here -->
+
 </body>
 
 </html>
