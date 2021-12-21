@@ -31,7 +31,8 @@ include 'config/navbar.php';
 
         // read current record's data
         try {
-            $query = "SELECT order_details.orderdetail_id, order_details.order_id, order_details.product_id, order_details.quantity, products.name FROM order_details 
+            $query = "SELECT order_details.orderdetail_id, order_details.order_id, order_details.product_id, order_details.quantity, products.name, products.price 
+            FROM order_details 
             INNER JOIN products 
             ON order_details.product_id = products.product_id 
             WHERE order_id = :order_id ";
@@ -79,21 +80,33 @@ include 'config/navbar.php';
                 //echo "<th> Customer Name</th><td>" . $first_name . "" . $last_name . "</td>";
                 echo "</tr>";
                 echo "<th>Product Name </th>";
-                echo "<th>Product ID</th>";
                 echo "<th>Quantity</th>";
+                echo "<th>Price</th>";
+                echo "<th>Total</th>";
                 // echo "<th>Username</th>";
                 echo "</tr>";
 
+                $grand_total = 0;
                 // retrieve our table contents
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     extract($row);
                     // creating new table row per record
                     echo "<tr>";
                     echo "<td>{$name}</td>";
-                    echo "<td>{$product_id}</td>";
                     echo "<td>{$quantity}</td>";
+                    echo "<td class='col text-end'>{$price}</td>";
+                    $total = $price * $quantity;
+                    echo "<td class='col text-end'>{$total}</td>";
                     echo "</tr>";
+                    $grand_total = $grand_total + $total;
                 }
+
+                echo "<tr class='fw-bold fs-5'>";
+                echo "<td colspan='3'>Grand Total:</td>";
+                echo "<td class='col text-end'>$grand_total</td>";
+                echo "</tr>";
+
+
 
                 // end table
                 echo "</table>";

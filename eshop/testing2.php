@@ -1,261 +1,172 @@
-<!DOCTYPE HTML>
-<html>
+<?php
+include 'config/navbar.php';
+?>
+<!-- container -->
+<div class="container">
 
-<head>
-    <title>Eshop Customer Create to insert the data in database(PDO Method)</title>
-    <!-- Latest compiled and minified Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-</head>
+    <?php
+    include 'config/database.php';
 
-<body>
-    <!-- container -->
-    <div class="container-fuild bg-dark">
-        <div class="container">
+    $query_category = "SELECT * FROM categories ORDER BY category_id ASC";
+    $stmt_category = $con->prepare($query_category);
+    $stmt_category->execute();
 
-            <nav class="navbar-expand-lg py-2">
+    $query_products = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+    FROM categories
+    INNER JOIN products 
+    ON products.category_id = categories.category_id 
+    ORDER BY product_id DESC";
 
-                <div class="collapse navbar-collapse d-flex justify-content-between">
-                    <ul class="navbar-nav mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link text-secondary" href="home.php">Home</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle active text-white" href="#" role="button" data-bs-toggle="dropdown">
-                                Product
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item bg-secondary" href="#">Create Product</a></li>
-                                <li><a class="dropdown-item" href="product_read.php">Product Listing</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-secondary" href="#" role="button" data-bs-toggle="dropdown">
-                                Customer
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" href="customer_create.php">Create Customer</a></li>
-                                <li><a class="dropdown-item" href="customer_read.php">Customer Listing</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-secondary" href="#" role="button" data-bs-toggle="dropdown">
-                                Order
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" href="neworder_create.php">Create New Order</a></li>
-                                <li><a class="dropdown-item" href="neworder_read.php">Order Listing</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-secondary" href="session_logout.php">Log Out</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </div>
+    $stmt_products = $con->prepare($query_products);
+    $stmt_products->execute();
+    $table = $stmt_products->fetchAll();
 
-    <div class="container">
+    $flag = 0;
+    $message = '';
+    if (isset($_POST['filter'])) {
 
-        <div class="page-header">
-            <h1>Create Product</h1>
-        </div>
+        $category_option = $_POST['category'];
 
-        <!-- html form to create product will be here -->
-        <!-- PHP insert code will be here -->
-        <?php
-        include 'config/database.php';
-        $query_category = "SELECT * FROM categories ORDER BY category_id ASC";
-        $stmt_category = $con->prepare($query_category);
-        $stmt_category->execute();
+        if ($category_option != "show_all") {
+            $query_selectedCategory = "SELECT product_id, name, description, price
+            FROM products
+            WHERE category_id = :category_id
+            ORDER BY product_id DESC";
 
+            $stmt_selectedCat = $con->prepare($query_selectedCategory);
+            $stmt_selectedCat->bindParam(':category_id', $category_option);
+        } else {
+            $query_selectedCategory = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+            FROM categories
+            INNER JOIN products 
+            ON products.category_id = categories.category_id 
+            ORDER BY product_id DESC";
 
+            $stmt_selectedCat = $con->prepare($query_selectedCategory);
+        }
+        $stmt_selectedCat->execute();
+        $num = $stmt_selectedCat->rowCount();
+        $table = $stmt_selectedCat->fetchAll();
+    } elseif (isset($_POST['search'])) {
 
-        if ($_POST) {
-            // include database connection
-
-            try {
-                // insert query
-                $query = "INSERT INTO products SET name=:name, description=:description, category_id=:category_id, price=:price, 
-                promotionprice=:promotionprice,
-                manufacturedate=:manufacturedate, 
-                expireddate=:expireddate, 
-                created=:created";
-                // prepare query for execution
-                $stmt = $con->prepare($query);
-                $name = $_POST['name'];
-                $description = $_POST['description'];
-                $category_id = $_POST['category_id'];
-                $price = $_POST['price'];
-                $promotionprice = $_POST['promotionprice'];
-                $manufacturedate = $_POST['manufacturedate'];
-                $expireddate = $_POST['expireddate'];
-                // bind the parameters
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':category_id', $category_id);
-                $stmt->bindParam(':price', $price);
-                $stmt->bindParam(':promotionprice', $promotionprice);
-                $stmt->bindParam(':manufacturedate', $manufacturedate);
-                $stmt->bindParam(':expireddate', $expireddate);
-                $created = date('Y-m-d H:i:s'); // get the current date and time
-                $stmt->bindParam(':created', $created);
-                // Execute the query
-                $flag = 0;
-                $message = "";
-
-                //empty validation
-                if (!preg_match("/[a-zA-Z0-9]{1,}/", $expireddate)) {
-                    $message = "Expired Date cannot be empty";
-                    $flag = 1;
-                }
-                if (!preg_match("/[a-zA-Z0-9]{1,}/", $manufacturedate)) {
-                    $message = "Manufacture Date cannot be empty";
-                    $flag = 1;
-                }
-                if (!preg_match("/[a-zA-Z0-9]{1,}/", $promotionprice)) {
-                    $message = "Promotion Price cannot be empty";
-                    $flag = 1;
-                } else {
-                    //promotion price validation
-                    if (preg_match("/-/", $promotionprice)) {
-                        $message = "Promotion Price should not negative";
-                        $flag = 1;
-                    }
-                    if ($promotionprice > $price) {
-                        $message = "Promotion Price cannot more than Regular Price";
-                        $flag = 1;
-                    }
-                    if (!preg_match("/[0-9]/", $promotionprice)) {
-                        $message = "Promotion Price should be numbers only";
-                        $flag = 1;
-                    }
-                    if (preg_match("/\s/", $promotionprice)) {
-                        $message = "Promotion Price cannot contain space";
-                        $flag = 1;
-                    }
-                }
-                if (!preg_match("/[0-9]{1,}/", $price)) {
-                    $message = "Price cannot be empty";
-                    $flag = 1;
-                } else {
-                    //price validation
-                    if (preg_match("/-/", $price) || $price < 1000) {
-                        $message = "Price should not negative and less than 1000";
-                        $flag = 1;
-                    }
-                    if (!preg_match("/[0-9]/", $price) || preg_match("/[a-zA-Z]/", $price)) {
-                        $message = "Price should be numbers only";
-                        $flag = 1;
-                    }
-                    if (preg_match("/\s/", $price)) {
-                        $message = "price cannot contain space";
-                        $flag = 1;
-                    }
-                }
-                if (empty($category_id)) {
-                    $message = "Category cannot be empty";
-                    $flag = 1;
-                }
-                if (!preg_match("/[a-zA-Z0-9]{1,}/", $description)) {
-                    $message = "Description cannot be empty";
-                    $flag = 1;
-                }
-                if (!preg_match("/[a-zA-Z0-9]{1,}/", $name)) {
-                    $message = "Name cannot be empty";
-                    $flag = 1;
-                }
-
-                //Date validation
-                if ($expireddate . substr(0, 4) < $manufacturedate . substr(0, 4)) {
-                    $message = "Manufacture date should be earlier than Expired date";
-                    $flag = 1;
-                    if ($expireddate . substr(5, 7) <  $manufacturedate . substr(5, 7)) {
-                        $message = "Manufacture date should be earlier than Expired date";
-                        $flag = 1;
-                        if ($expireddate . substr(8, 10) <  $manufacturedate . substr(8, 10)) {
-                            $message = "Manufacture date should be earlier than Expired date";
-                            $flag = 1;
-                        }
-                    }
-                }
-
-
-
-                if ($flag == 0) {
-                    if ($stmt->execute()) {
-                        echo "<div class='alert alert-success'>Record was saved.</div>";
-                    }
-                } else {
-                    echo "<div class='alert alert-danger'>";
-                    echo $message;
-                    echo "</div>";
-                }
-            }
-            // show error
-            catch (PDOException $exception) {
-                die('ERROR: ' . $exception->getMessage());
-            }
+        if (empty($_POST['search_field'])) {
+            echo "<div class='alert alert-danger mt-4'>Nothing was searched.</div>";
         }
 
-        ?>
+        $query_search = "SELECT products.product_id, products.name, products.description, products.price, categories.category_name
+        FROM products
+        INNER JOIN categories
+        ON products.category_id = categories.category_id
+        WHERE products.name LIKE :name
+        ORDER BY product_id ";
 
-        <!-- html form here where the product information will be entered -->
+        $search_field = "%" . $_POST['search_field'] . "%";
+        $stmt_search = $con->prepare($query_search);
+        $stmt_search->bindParam(':name', $search_field);
+        $stmt_search->execute();
+        $num = $stmt_search->rowCount();
+        $table = $stmt_search->fetchAll();
+    }
+
+
+    if (isset($_POST['filter']) || !isset($_POST['filter']) || $category_option == "show_all" || isset($_POST['search']) || !isset($_POST['search'])) {
+        $category_option = $_POST ? $_POST['category'] : ' ';
+        $table_content = '';
+        foreach ($table as $row) {
+
+            $category_header = $category_option == "show_all" || !isset($_POST['filter']) ? "<td>" . $row['category_name'] . "</td>" : ' ';
+
+            //set a variable for table content
+            $table_content = $table_content . "<tr>"
+                . "<td>" . $row['product_id'] . "</td>"
+                . "<td>" . $row['name'] . "</td>"
+                . "<td>" . $row['description'] . "</td>"
+                . $category_header
+                . "<td class='text-end'>" . $row['price'] . "</td>"
+                . "<td>"
+                //read one record
+                . "<a href='product_read_one.php?id={$row['product_id']}' class='btn btn-info'>Read</a>"
+
+                //edit record
+                . "<a href='product_update.php?id={$row['product_id']}' class='btn btn-primary'>Edit</a>"
+
+                //delete record
+                . "<a href='#' onclick='delete_product({$row['product_id']});'  class='btn btn-danger'>Delete</a>"
+                . "</td>"
+                . "</tr>";
+        }
+    }
+    if ($_POST) {
+        if ($num <= 0) {
+            echo "<div class='alert alert-danger mt-4'>No records found.</div>";
+            echo "<div class='d-flex justify-content-center m-3'>";
+            echo "<a href='product_read.php' class='btn btn-warning'>Back to Product Read</a>";
+            echo "</div>";
+        }
+    }
+    ?>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Read Products</h1>
+        </div>
+
+        <div class="d-flex justify-content-center m-3">
+            <a href='product_create.php' class='btn btn-primary'>Create New Product</a>
+        </div>
+
         <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
-            <table class='table table-hover table-responsive table-bordered'>
-                <tr>
-                    <td>Name</td>
-                    <td><input type='text' name='name' class='form-control' /></td>
-                </tr>
-                <tr>
-                    <td>Description</td>
-                    <td><textarea name="description" rows="5" class="form-control"></textarea></td>
-                </tr>
-                <tr>
-                    <td>Category</td>
-                    <td>
-                        <select class="form-control form-select fs-6 rounded" name="category_id">
-                            <option value="">--Category--</option>
-                            <?php
-                            while ($row = $stmt_category->fetch(PDO::FETCH_ASSOC)) {
-                                extract($row);
-                                $selected_category = $row['id'] == $_POST['category_id'] ? 'selected' : '';
-                                echo "<option class='bg-white' value='{$id}'>$category_name</option>";
-                            }
-                            ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Price</td>
-                    <td><input type='text' name='price' class='form-control' /></td>
-                </tr>
-                <tr>
-                    <td>Promotion Price</td>
-                    <td><input type='text' name='promotionprice' class='form-control' /></td>
-                </tr>
-                <tr>
-                    <td>Manufacture Date</td>
-                    <td><input type='date' name='manufacturedate' class='form-control' /></td>
-                </tr>
-                <tr>
-                    <td>Expired Date</td>
-                    <td><input type='date' name='expireddate' class='form-control' /></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='product_read.php' class='btn btn-danger'>Back to read products</a>
-                    </td>
-                </tr>
-            </table>
+            <div>
+                <select class="fs-4 rounded col-4" name="category">
+                    <option value="show_all">Show All</option>
+
+                    <?php
+                    $category_list = $_POST ? $_POST['category'] : ' ';
+                    while ($row = $stmt_category->fetch(PDO::FETCH_ASSOC)) {
+                        extract($row);
+                        $selected_category = $row['category_id'] == $category_list ? 'selected' : '';
+                        echo "<option class='bg-white' value='$category_id' $selected_category>$category_name</option>";
+                    }
+                    ?>
+
+                </select>
+                <input type="submit" value="Go" name="filter" />
+            </div>
+
+            <div>
+                <input type="text" placeholder="Search" name="search_field" value="<?php $search_field ?>" class="fs-4 rounded col-4" />
+                <input type="submit" value="Search" name="search">
+            </div>
         </form>
 
+        <table class='table table-hover table-responsive table-bordered'>
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <?php
+                echo $_POST && $category_option == "show_all" || !isset($_POST['filter']) ? "<th>Category</th>" : '';
+                ?>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+
+            <?php
+            //check if more than 0 record found
+            echo $table_content;
+            ?>
+
+        </table>
+
     </div>
-    <!-- end .container -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+
+</div> <!-- end .container -->
+
+<!-- confirm delete record will be here -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </body>
 
 </html>
