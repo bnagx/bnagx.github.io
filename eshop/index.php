@@ -23,6 +23,7 @@
     <div class="container vh-100">
 
         <?php
+        session_start();
 
         if ($_POST) {
 

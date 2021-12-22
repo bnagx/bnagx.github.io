@@ -9,29 +9,103 @@
 
 <?php
 include 'config/navbar.php';
+include 'config/database.php';
+include 'config/session.php';
 ?>
 
 
+<div class="container">
+    <?php
 
-<div>
-    <h1>Welcome to E shop</h1>
+    if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+        $query = 'SELECT first_name, last_name, gender from customers WHERE email= ?';
+    } else {
+        $query = 'SELECT first_name, last_name, gender FROM customers WHERE username=?';
+    }
+
+    $stmt = $con->prepare($query);
+    $stmt->bindParam(1, $_SESSION['username']);
+    $stmt->execute();
+    $numCustomer = $stmt->rowCount();
+    if ($numCustomer > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $first_name = $row['first_name'];
+        $last_name = $row['last_name'];
+        $gender = $row['gender'];
+
+        $loginperson = '';
+
+        if ($gender == 'Male') {
+            $loginperson = "Mr. $first_name $last_name";
+        } else {
+            $loginperson = "Ms. $first_name $last_name";
+        }
+    }
+
+    $qOrder = 'SELECT * FROM order_summary';
+    $stmtOrder = $con->prepare($qOrder);
+    $stmtOrder->execute();
+    $totalOrder = $stmtOrder->rowCount();
+
+    $qCustomer = 'SELECT * FROM customers';
+    $stmtOrder = $con->prepare($qCustomer);
+    $stmtOrder->execute();
+    $totalCustomer = $stmtOrder->rowCount();
+
+    $qLastOrder = 'SELECT * FROM order_summary ORDER BY order_id DESC LIMIT 1';
+    $stmtLastOrder = $con->prepare($qLastOrder);
+    $stmtLastOrder->execute();
+    $lastOrder = $stmtLastOrder->rowCount();
+
+    ?>
+
+    <div class="page-header">
+        <h1>Home</h1>
+        <h2>Welcome! <?php echo $loginperson; ?></h2>
+    </div>
+
+    <div>
+
+        <table class="table table-dark table-striped table-responsive">
+            <tr>
+                <td>Total Order:</td>
+                <td><?php echo $totalOrder ?></td>
+            </tr>
+            <tr>
+                <td>Total Customer:</td>
+                <td><?php echo $totalCustomer ?></td>
+            </tr>
+        </table>
+
+
+    </div>
+
+    <h3>Last Order</h3>
+    <?php
+    if ($lastOrder > 0) {
+        while ($rowLast = $stmtLastOrder->fetch(PDO::FETCH_ASSOC)) {
+            extract($rowLast);
+            $order_id = $rowLast['order_id'];
+            $ordercreate = $rowLast['order_date'];
+
+
+            echo "<table class='table table-dark table-striped '>";
+            echo "<tr>";
+            echo "<th>Order ID</th><td>" . $order_id . "</td>";
+            echo "</tr>";
+            echo "<tr>";
+            echo "<th>Order Create Date</th><td>" . $ordercreate . "</td>";
+            echo "</tr>";
+            echo "</table>";
+        }
+    }
+    ?>
+
+
 </div>
 
-<?php
-
-$action = isset($_GET['action']) ? $_GET['action'] : "";
-
-// if it was redirected from delete.php
-if ($action == 'deleted') {
-    echo "<div class='alert alert-success'>Record was deleted.</div>";
-}
 
 
-
-
-
-
-?>
 
 
 
