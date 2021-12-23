@@ -5,7 +5,11 @@
 
 
 
+<?php
 
+session_start();
+
+?>
 
 <!DOCTYPE HTML>
 <html>
@@ -23,7 +27,7 @@
     <div class="container vh-100">
 
         <?php
-        session_start();
+
 
         if ($_POST) {
 
