@@ -101,6 +101,9 @@
                 if (isset($flag) && $flag == 1) {
                     echo "<div class='alert alert-danger'>$message</div>";
                 }
+                if (isset($_GET['msg']) && $_GET['msg'] == 'createsuccess') {
+                    echo "<div class='alert alert-success'>Account Created Successfully. Please Log In.</div>";
+                }
                 ?>
 
 

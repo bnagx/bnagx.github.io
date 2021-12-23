@@ -9,5 +9,5 @@
 session_start();
 
 if (!isset($_SESSION['username'])) {
-    header('Location:login.php?msg=loginerr');
+    header('Location:index.php?msg=loginerr');
 }

@@ -5,92 +5,88 @@
 
 
 
+<?php
+include 'config/navbar.php';
+include 'config/session.php';
+?>
 
-<!DOCTYPE HTML>
-<html>
+<!-- container -->
+<div class="container">
+    <div class="page-header">
+        <h1>Read Product</h1>
+    </div>
 
-<head>
-    <title>Read one product</title>
-    <!-- Latest compiled and minified Bootstrap CSS -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <?php
+    // get passed parameter value, in this case, the record ID
+    // isset() is a PHP function used to verify if a value is there or not
+    $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
 
-</head>
+    //include database connection
+    include 'config/database.php';
 
-<body>
-
-    <!-- container -->
-    <div class="container">
-        <div class="page-header">
-            <h1>Read Product</h1>
-        </div>
-
-        <?php
-        // get passed parameter value, in this case, the record ID
-        // isset() is a PHP function used to verify if a value is there or not
-        $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
-
-        //include database connection
-        include 'config/database.php';
-
-        // read current record's data
-        try {
-            // prepare select query
-            $query = "SELECT product_id, name, description, price FROM products WHERE product_id = :product_id ";
-            $stmt = $con->prepare($query);
-
-            // Bind the parameter
-            $stmt->bindParam(":product_id", $id);
-
-            // execute our query
-            $stmt->execute();
-
-            // store retrieved row to a variable
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // values to fill up our form
-            $name = $row['name'];
-            $description = $row['description'];
-            $price = $row['price'];
-            // shorter way to do that is extract($row)
-        }
-
-        // show error
-        catch (PDOException $exception) {
-            die('ERROR: ' . $exception->getMessage());
-        }
-        ?>
+    // read current record's data
 
 
-        <!--we have our html table here where the record will be displayed-->
-        <table class='table table-hover table-responsive table-bordered'>
-            <tr>
-                <td>Name</td>
-                <td><?php echo htmlspecialchars($name, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td>Description</td>
-                <td><?php echo htmlspecialchars($description, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td>Price</td>
-                <td><?php echo htmlspecialchars($price, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <a href='product_read.php' class='btn btn-danger'>Back to read products</a>
-                </td>
-            </tr>
-        </table>
+    //         $query2 = "SELECT order_summary.order_id, customers.first_name, customers.last_name, customers.username
+    // FROM order_summary  
+    // INNER JOIN customers 
+    // ON order_summary.username= customers.username 
+    // ORDER BY order_id = $id ";
+
+    try {
+        // prepare select query
+        $query = "SELECT product_id, name, description, price FROM products WHERE product_id = :product_id ";
+        $stmt = $con->prepare($query);
+
+        // Bind the parameter
+        $stmt->bindParam(":product_id", $id);
+
+        // execute our query
+        $stmt->execute();
+
+        // store retrieved row to a variable
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // values to fill up our form
+        $name = $row['name'];
+        $description = $row['description'];
+        $price = $row['price'];
+        // shorter way to do that is extract($row)
+    }
+
+    // show error
+    catch (PDOException $exception) {
+        die('ERROR: ' . $exception->getMessage());
+    }
+    ?>
 
 
-    </div> <!-- end .container -->
+    <!--we have our html table here where the record will be displayed-->
+    <table class='table table-hover table-responsive table-bordered'>
+        <tr>
+            <td>Name</td>
+            <td><?php echo htmlspecialchars($name, ENT_QUOTES);  ?></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td><?php echo htmlspecialchars($description, ENT_QUOTES);  ?></td>
+        </tr>
+        <tr>
+            <td>Price</td>
+            <td><?php echo htmlspecialchars($price, ENT_QUOTES);  ?></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <a href='product_read.php' class='btn btn-danger'>Back to read products</a>
+            </td>
+        </tr>
+    </table>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+</div> <!-- end .container -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
 </body>
 

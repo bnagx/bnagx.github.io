@@ -120,6 +120,7 @@ include 'config/navbar.php';
             if ($flag == 0) {
                 if ($stmt->execute()) {
                     echo "<div class='alert alert-success'>Record was saved.</div>";
+                    header('Location:index.php?msg=createsuccess');
                 } else {
                     echo "Unable to save record.";
                 }
@@ -139,7 +140,7 @@ include 'config/navbar.php';
         <table class='table table-hover table-responsive table-bordered'>
             <tr>
                 <td>Username</td>
-                <td><input type='text' name='username' class='form-control' />
+                <td><input type='text' name='username' class='form-control' value="<?php echo $_POST ? $_POST['username'] : ''; ?> " />
                     <span>
                         <?php if (isset($usernameErr)) echo "<div class='text-danger'>*$usernameErr</div>  "; ?>
                     </span>
@@ -147,7 +148,7 @@ include 'config/navbar.php';
             </tr>
             <tr>
                 <td>Email</td>
-                <td><input type='email' name='email' class='form-control' />
+                <td><input type='email' name='email' class='form-control' value=" <?php echo $_POST ? $_POST['email'] : ''; ?> " />
                     <span>
                         <?php if (isset($emailErr)) echo "<div class='text-danger'>*$emailErr</div>  "; ?>
                     </span>
@@ -171,7 +172,7 @@ include 'config/navbar.php';
             </tr>
             <tr>
                 <td>First Name</td>
-                <td><input type="text" name='first_name' class='form-control' />
+                <td><input type="text" name='first_name' class='form-control' value="<?php echo $_POST ? $_POST['first_name'] : ''; ?> " />
                     <span>
                         <?php if (isset($first_nameErr)) echo "<div class='text-danger'>*$first_nameErr</div>  "; ?>
                     </span>
@@ -179,7 +180,7 @@ include 'config/navbar.php';
             </tr>
             <tr>
                 <td>Last Name</td>
-                <td><input type="text" name='last_name' class='form-control' />
+                <td><input type=" text" name='last_name' class='form-control' value="<?php echo $_POST ? $_POST['last_name'] : ''; ?> " />
                     <span>
                         <?php if (isset($last_nameErr)) echo "<div class='text-danger'>*$last_nameErr</div>  "; ?>
                     </span>
@@ -189,11 +190,15 @@ include 'config/navbar.php';
                 <td>Gender</td>
                 <td>
                     <div class="form-check form-check-inline">
-                        <input type="radio" id="male" name='gender' value="Male" class="form-check-input">
+                        <input type="radio" id="male" name='gender' value="Male" class="form-check-input" <?php if ($_POST) {
+                                                                                                                echo $_POST['gender'] == 'Male' ? 'checked' : '';
+                                                                                                            } ?>>
                         <label class="form-check-label" for="male">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="radio" id="female" name='gender' value="Female" class="form-check-input">
+                        <input type="radio" id="female" name='gender' value="Female" class="form-check-input" <?php if ($_POST) {
+                                                                                                                    echo $_POST['gender'] == 'Female' ? 'checked' : '';
+                                                                                                                } ?>>
                         <label class="form-check-label" for="female">Female</label>
                     </div>
                     <span>
@@ -203,7 +208,7 @@ include 'config/navbar.php';
             </tr>
             <tr>
                 <td>Date of birth</td>
-                <td><input type='date' name='dateofbirth' class='form-control' />
+                <td><input type='date' name='dateofbirth' class='form-control' value="<?php echo $_POST ? $_POST['dateofbirth'] : ' '; ?>" />
                     <span>
                         <?php if (isset($date_of_birthErr)) echo "<div class='text-danger'>*$date_of_birthErr</div>  "; ?>
                     </span>

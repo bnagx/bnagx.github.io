@@ -8,6 +8,8 @@
 
 <?php
 include 'config/navbar.php';
+include 'config/session.php.php';
+
 ?>
 
 <div class="container">

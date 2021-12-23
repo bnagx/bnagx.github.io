@@ -7,6 +7,7 @@
 
 <?php
 include 'config/navbar.php';
+include 'config/session.php.php';
 ?>
 
 <body>
@@ -62,35 +63,35 @@ include 'config/navbar.php';
         <!--we have our html table here where the record will be displayed-->
         <table class='table table-hover table-responsive table-bordered'>
             <tr>
-                <td>username</td>
+                <td>Username</td>
                 <td><?php echo htmlspecialchars($username, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>email</td>
+                <td>Email</td>
                 <td><?php echo htmlspecialchars($email, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>first_name</td>
+                <td>First Name</td>
                 <td><?php echo htmlspecialchars($first_name, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>last_name</td>
+                <td>Last Name</td>
                 <td><?php echo htmlspecialchars($last_name, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>gender</td>
+                <td>Gender</td>
                 <td><?php echo htmlspecialchars($gender, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>dateofbirth</td>
+                <td>Date of Birth</td>
                 <td><?php echo htmlspecialchars($dateofbirth, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>registration</td>
+                <td>Registration</td>
                 <td><?php echo htmlspecialchars($registration, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>accountstatus</td>
+                <td>Account Status</td>
                 <td><?php echo htmlspecialchars($accountstatus, ENT_QUOTES);  ?></td>
             </tr>
 

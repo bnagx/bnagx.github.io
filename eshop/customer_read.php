@@ -8,6 +8,8 @@
 
 <?php
 include 'config/navbar.php';
+include 'config/session.php.php';
+
 ?>
 
 
@@ -46,10 +48,6 @@ include 'config/navbar.php';
         echo "<th>First Name</th>";
         echo "<th>Last Name</th>";
         echo "<th>Gender</th>";
-        echo "<th>Date of Birth</th>";
-        echo "<th>Register Date & Time</th>";
-        echo "<th>Account Status</th>";
-
         echo "</tr>";
 
         // retrieve our table contents
@@ -64,9 +62,6 @@ include 'config/navbar.php';
             echo "<td>{$first_name}</td>";
             echo "<td>{$last_name}</td>";
             echo "<td>{$gender}</td>";
-            echo "<td>{$dateofbirth}</td>";
-            echo "<td>{$registration}</td>";
-            echo "<td>{$accountstatus}</td>";
             echo "<td>";
             // read one record
             echo "<a href='customer_read_one.php?id={$username}' class='btn btn-info m-r-1em'>Read</a>";

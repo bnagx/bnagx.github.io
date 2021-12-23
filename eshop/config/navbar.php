@@ -41,7 +41,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-secondary" href="contact_us.php">Contact Us</a>
+                        <a class="nav-link text-secondary" href="contactus.php">Contact Us</a>
                     </li>
                 </ul>
                 <span class="navbar-text d-flex">
