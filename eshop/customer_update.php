@@ -5,7 +5,7 @@
 
 <?php
 include 'config/navbar.php';
-include 'config/session.php.php';
+include 'config/session.php';
 
 ?>
 
