@@ -8,6 +8,7 @@
 
 <?php
 include 'config/navbar.php';
+include 'config/session.php.php';
 ?>
 
 
@@ -41,10 +42,10 @@ include 'config/navbar.php';
 
         //creating our table heading
         echo "<tr>";
-        echo "<th>order_id</th>";
-        echo "<th>username</th>";
-        echo "<th>order_date</th>";
-        echo "<th>email</th>";
+        echo "<th>Order ID</th>";
+        echo "<th>Username</th>";
+        echo "<th>Order Date</th>";
+        echo "<th>Email</th>";
         echo "<th>Action</th>";
         echo "</tr>";
 

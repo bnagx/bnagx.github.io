@@ -6,43 +6,45 @@ include 'config/navbar.php';
 
     <?php
     include 'config/database.php';
+    include 'config/session.php';
+
 
     $query_category = "SELECT * FROM categories ORDER BY category_id ASC";
     $stmt_category = $con->prepare($query_category);
     $stmt_category->execute();
 
-    $query_products = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+    $query_allProd = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
     FROM categories
     INNER JOIN products 
     ON products.category_id = categories.category_id 
     ORDER BY product_id DESC";
 
-    $stmt_products = $con->prepare($query_products);
-    $stmt_products->execute();
-    $table = $stmt_products->fetchAll();
+    $stmt_allProd = $con->prepare($query_allProd);
+    $stmt_allProd->execute();
+    $table = $stmt_allProd->fetchAll();
 
     $flag = 0;
     $message = '';
-    if (isset($_POST['filtercategory'])) {
+    if (isset($_POST['filter'])) {
 
         $category_option = $_POST['category'];
 
         if ($category_option != "show_all") {
-            $query_selectedCategory = "SELECT product_id, name, description, price
+            $query_selectedCat = "SELECT product_id, name, description, price
             FROM products
             WHERE category_id = :category_id
             ORDER BY product_id DESC";
 
-            $stmt_selectedCat = $con->prepare($query_selectedCategory);
+            $stmt_selectedCat = $con->prepare($query_selectedCat);
             $stmt_selectedCat->bindParam(':category_id', $category_option);
         } else {
-            $query_selectedCategory = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+            $query_selectedCat = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
             FROM categories
             INNER JOIN products 
             ON products.category_id = categories.category_id 
             ORDER BY product_id DESC";
 
-            $stmt_selectedCat = $con->prepare($query_selectedCategory);
+            $stmt_selectedCat = $con->prepare($query_selectedCat);
         }
         $stmt_selectedCat->execute();
         $num = $stmt_selectedCat->rowCount();
@@ -69,12 +71,12 @@ include 'config/navbar.php';
     }
 
 
-    if (isset($_POST['filtercategory']) || !isset($_POST['filtercategory']) || $category_option == "show_all" || isset($_POST['search']) || !isset($_POST['search'])) {
+    if (isset($_POST['filter']) || !isset($_POST['filter']) || $category_option == "show_all" || isset($_POST['search']) || !isset($_POST['search'])) {
         $category_option = $_POST ? $_POST['category'] : ' ';
         $table_content = '';
         foreach ($table as $row) {
 
-            $category_header = $category_option == "show_all" || !isset($_POST['filtercategory']) ? "<td>" . $row['category_name'] . "</td>" : ' ';
+            $category_header = $category_option == "show_all" || !isset($_POST['filter']) ? "<td>" . $row['category_name'] . "</td>" : ' ';
 
             //set a variable for table content
             $table_content = $table_content . "<tr>"
@@ -82,7 +84,7 @@ include 'config/navbar.php';
                 . "<td>" . $row['name'] . "</td>"
                 . "<td>" . $row['description'] . "</td>"
                 . $category_header
-                . "<td class='text-end'>" . $row['price'] . "</td>"
+                . "<td >" . $row['price'] . "</td>"
                 . "<td>"
                 //read one record
                 . "<a href='product_read_one.php?id={$row['product_id']}' class='btn btn-info'>Read</a>"
@@ -96,6 +98,7 @@ include 'config/navbar.php';
                 . "</tr>";
         }
     }
+
     if ($_POST) {
         if ($num <= 0) {
             echo "<div class='alert alert-danger mt-4'>No records found.</div>";
@@ -111,13 +114,13 @@ include 'config/navbar.php';
             <h1>Read Products</h1>
         </div>
 
-        <div class="d-flex justify-content-center m-3">
+        <div class="m-3">
             <a href='product_create.php' class='btn btn-primary'>Create New Product</a>
         </div>
 
         <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
-            <div class="row d-flex justify-content-center m-3">
-                <select class="fs-4 rounded col-4" name="category">
+            <div class="row d-flex m-3">
+                <select class="fs-4 rounded col-3" name="category">
                     <option value="show_all">Show All</option>
 
                     <?php
@@ -133,8 +136,8 @@ include 'config/navbar.php';
                 <input type="submit" value="Go" name="filter" class="btn-sm btn btn-secondary col-1 mx-2 fs-5" />
             </div>
 
-            <div class="row d-flex justify-content-center m-3">
-                <input type="text" placeholder="Search" name="search_field" value="<?php $search_field ?>" class="fs-4 rounded col-4" />
+            <div class="row d-flex m-3">
+                <input type="text" placeholder="Search..." name="search_field" value="<?php $search_field ?>" class="fs-4 rounded col-3" />
                 <input type="submit" value="Search" name="search" class="btn-sm btn btn-secondary col-1 mx-2 fs-5">
             </div>
         </form>
@@ -148,7 +151,7 @@ include 'config/navbar.php';
                 <?php
                 echo $_POST && $category_option == "show_all" || !isset($_POST['filter']) ? "<th>Category</th>" : '';
                 ?>
-                <th>Price</th>
+                <th>Price(RM)</th>
                 <th>Action</th>
             </tr>
 

@@ -9,6 +9,7 @@
 
 <?php
 include 'config/navbar.php';
+include 'config/session.php.php';
 ?>
 
 
@@ -73,12 +74,19 @@ include 'config/navbar.php';
                 //creating our table heading
                 echo "<tr>";
 
-                echo "<th>order_id</th> <td> $id</td>";
+                echo "<th>Order ID</th> <td> $id</td>";
                 echo "</tr>";
                 echo "<tr>";
                 echo "<th> Customer Name</th><td> $username </td>";
                 //echo "<th> Customer Name</th><td>" . $first_name . "" . $last_name . "</td>";
                 echo "</tr>";
+
+
+                echo "</table>";
+
+
+                echo "<table class='table table-hover table-responsive table-bordered'>"; //start table
+
                 echo "<th>Product Name </th>";
                 echo "<th>Quantity</th>";
                 echo "<th>Price</th>";
