@@ -25,7 +25,7 @@ include 'config/navbar.php';
         include 'config/database.php';
         try {
             // insert query
-            $query = "INSERT INTO customers SET username=:username,email=:email, password=:password, confirm_password=:confirm_password, first_name=:first_name, last_name=:last_name, gender=:gender, dateofbirth=:dateofbirth";
+            $query = "INSERT INTO customers SET username=:username,email=:email, password=:password, confirm_password=:confirm_password, first_name=:first_name, last_name=:last_name, gender=:gender, dateofbirth=:dateofbirth,customer_img=:customer_img";
             // prepare query for execution
             $stmt = $con->prepare($query);
             $username = $_POST['username'];
@@ -36,6 +36,7 @@ include 'config/navbar.php';
             $last_name = $_POST['last_name'];
             //$gender = $_POST['gender'];
             $dateofbirth = $_POST['dateofbirth'];
+            $customer_img = basename($_FILES["cimg"]["name"]);
             // bind the parameters
             $stmt->bindParam(':username', $username);
             $stmt->bindParam(':email', $email);
@@ -45,12 +46,67 @@ include 'config/navbar.php';
             $stmt->bindParam(':last_name', $last_name);
             $stmt->bindParam(':gender', $_POST['gender']);
             $stmt->bindParam(':dateofbirth', $dateofbirth);
+            $stmt->bindParam(':customer_img', $customer_img);
             // Execute the query
 
             $flag = 0;
             $message = "";
             $cur_date = date('Y');
             $cust_age = ((int)$cur_date - (int)$dateofbirth);
+
+            if (!empty($_FILES['cimg']['name'])) {
+                $target_dir = "uploads/";
+                $target_file = $target_dir . basename($_FILES["cimg"]["name"]);
+                $isUploadOK = TRUE;
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                $check = getimagesize($_FILES["cimg"]["tmp_name"]);
+                if ($check !== false) {
+                    echo "File is an image - " . $check["mime"] . ".";
+                    $isUploadOK = TRUE;
+                } else {
+                    $flag = 1;
+                    $message .= "File is not an image.<br>";
+                    $isUploadOK = FALSE;
+                }
+
+
+                if (
+                    $_FILES["cimg"]["size"] > 5000000
+                ) {
+                    $flag = 1;
+                    $message .= "Sorry, your file is too large.<br>";
+                    $isUploadOK = FALSE;
+                }
+                // Allow certain file formats
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    $flag = 1;
+                    $message .= "Sorry, only JPG, JPEG, PNG & GIF files are allowed.<br>";
+                    $isUploadOK = FALSE;
+                }
+                // Check if $uploadOk is set to 0 by an error
+                if ($isUploadOK == FALSE) {
+                    $flag = 1;
+                    $message .= "Sorry, your file was not uploaded."; // if everything is ok, try to upload file
+                } else {
+                    if (move_uploaded_file($_FILES["cimg"]["tmp_name"], $target_file)) {
+                        echo "The file " . basename($_FILES["cimg"]["name"]) . " has been uploaded.";
+                    } else {
+                        $flag = 1;
+                        $message .= "Sorry, there was an error uploading your file.<br>";
+                    }
+                }
+            } else {
+
+                $customer_img = '';
+            }
+
+
+
+
+
+
+
+
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -136,7 +192,7 @@ include 'config/navbar.php';
     ?>
 
     <!-- html form here where the customer information will be entered -->
-    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST" enctype="multipart/form-data">
         <table class='table table-hover table-responsive table-bordered'>
 
             <tr>
@@ -217,6 +273,13 @@ include 'config/navbar.php';
                     </span>
                 </td>
             </tr>
+
+            <tr>
+                <td>Select image (optional):</td>
+                <td> <input type="file" name="cimg" id="fileToUpload">
+                </td>
+            </tr>
+
             <tr>
                 <td></td>
                 <td>

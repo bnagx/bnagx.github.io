@@ -35,7 +35,7 @@ include 'config/session.php';
 
     try {
         // prepare select query
-        $query = "SELECT product_id, name, description, price FROM products WHERE product_id = :product_id ";
+        $query = "SELECT products.product_id, products.name, products.description, products.product_img, products.price, products.promotion_price, products.manufacture_date, products.expired_date, categories.category_name FROM products INNER JOIN categories ON products.category_id=categories.category_id WHERE product_id = :product_id ";
         $stmt = $con->prepare($query);
 
         // Bind the parameter
@@ -50,7 +50,12 @@ include 'config/session.php';
         // values to fill up our form
         $name = $row['name'];
         $description = $row['description'];
+        $product_img = $row['product_img'];
         $price = $row['price'];
+        $promo_price = $row['promotion_price'];
+        $manu_date = $row['manufacture_date'];
+        $exp_date = $row['expired_date'];
+        $product_category = $row['category_name'];
         // shorter way to do that is extract($row)
     }
 
@@ -64,8 +69,24 @@ include 'config/session.php';
     <!--we have our html table here where the record will be displayed-->
     <table class='table table-hover table-responsive table-bordered'>
         <tr>
+            <td>Product Image</td>
+
+            <?php
+            if ($product_img == '') {
+                echo '<td>No image</td>';
+            } else {
+                echo '<td><img src="productimg/' . $product_img . '"width="200px"></td>';
+            }
+
+            ?>
+        </tr>
+        <tr>
             <td>Name</td>
             <td><?php echo htmlspecialchars($name, ENT_QUOTES);  ?></td>
+        </tr>
+        <tr>
+            <td>Category</td>
+            <td><?php echo htmlspecialchars($product_category, ENT_QUOTES);  ?></td>
         </tr>
         <tr>
             <td>Description</td>
@@ -74,6 +95,18 @@ include 'config/session.php';
         <tr>
             <td>Price</td>
             <td><?php echo htmlspecialchars($price, ENT_QUOTES);  ?></td>
+        </tr>
+        <tr>
+            <td>Promotion Price</td>
+            <td><?php echo htmlspecialchars($promo_price, ENT_QUOTES);  ?></td>
+        </tr>
+        <tr>
+            <td>Manufacture Date</td>
+            <td><?php echo htmlspecialchars($manu_date, ENT_QUOTES);  ?></td>
+        </tr>
+        <tr>
+            <td>Expired Date</td>
+            <td><?php echo htmlspecialchars($exp_date, ENT_QUOTES);  ?></td>
         </tr>
         <tr>
             <td></td>

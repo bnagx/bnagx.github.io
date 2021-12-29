@@ -76,7 +76,6 @@ session_start();
                     } else {
                         $flag = 1;
                         $message = 'Your password is incorrect';
-                        echo md5($_POST['password']);
                     }
                 } else {
                     $flag = 1;

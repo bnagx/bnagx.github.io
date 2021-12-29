@@ -93,7 +93,7 @@ include 'config/navbar.php';
                 . "<a href='product_update.php?id={$row['product_id']}' class='btn btn-primary'>Edit</a>"
 
                 //delete record
-                . "<a href='#' onclick='delete_product({$row['product_id']});'  class='btn btn-danger'>Delete</a>"
+                . "<a href='product_delete.php' onclick='delete_product({$row['product_id']});'  class='btn btn-danger'>Delete</a>"
                 . "</td>"
                 . "</tr>";
         }

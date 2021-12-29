@@ -70,7 +70,7 @@ include 'config/session.php';
             echo "<a href='customer_update.php?id={$username}' class='btn btn-primary m-r-1em'>Edit</a>";
 
             // we will use this links on next part of this post
-            echo "<a href='#' onclick='delete_customer({$username});'  class='btn btn-danger'>Delete</a>";
+            echo "<a href='customer_delete.php' onclick='delete_customer({$username});'  class='btn btn-danger'>Delete</a>";
             echo "</td>";
             echo "</tr>";
         }

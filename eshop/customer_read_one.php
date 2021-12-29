@@ -29,7 +29,7 @@ include 'config/session.php';
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT username,email,first_name,last_name,gender,dateofbirth,registration,accountstatus FROM customers WHERE username = :username ";
+            $query = "SELECT username,email,first_name,last_name,gender,customer_img, dateofbirth, registration,accountstatus FROM customers WHERE username = :username ";
             $stmt = $con->prepare($query);
 
             // Bind the parameter
@@ -47,6 +47,7 @@ include 'config/session.php';
             $first_name = $row['first_name'];
             $last_name = $row['last_name'];
             $gender = $row['gender'];
+            $customer_img = $row['customer_img'];
             $dateofbirth = $row['dateofbirth'];
             $registration = $row['registration'];
             $accountstatus = $row['accountstatus'];
@@ -62,6 +63,20 @@ include 'config/session.php';
 
         <!--we have our html table here where the record will be displayed-->
         <table class='table table-hover table-responsive table-bordered'>
+            <tr>
+                <td>Customer Image</td>
+
+                <?php
+                if ($customer_img == '') {
+                    echo '<td>No image</td>';
+                } else {
+                    echo '<td><img src="uploads/' . $customer_img . '"width="200px"></td>';
+                }
+
+                ?>
+            </tr>
+
+
             <tr>
                 <td>Username</td>
                 <td><?php echo htmlspecialchars($username, ENT_QUOTES);  ?></td>

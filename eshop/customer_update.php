@@ -26,7 +26,7 @@ include 'config/session.php';
     // read current record's data
     try {
         // prepare select query
-        $query = "SELECT username, email, password, first_name, last_name, gender, dateofbirth, accountstatus FROM customers WHERE username = ? LIMIT 0,1";
+        $query = "SELECT * FROM customers WHERE username = ? LIMIT 0,1";
         $stmt = $con->prepare($query);
 
         // this is the first question mark
@@ -47,6 +47,7 @@ include 'config/session.php';
         $gender = $row['gender'];
         $dateofbirth = $row['dateofbirth'];
         $accountstatus = $row['accountstatus'];
+        $customer_img = $row['customer_img'];
     }
 
     // show error
@@ -63,20 +64,22 @@ include 'config/session.php';
             // in this case, it seemed like we have so many fields to pass and
             // it is better to label them and not use question marks
             $query = "UPDATE customers
-                  SET username=:username, email=:email,password=:new_password,first_name=:first_name,last_name=:last_name, gender=:gender,dateofbirth=:dateofbirth, accountstatus=:accountstatus  WHERE username = :username";
+                  SET username=:username, email=:email,password=:new_password,first_name=:first_name,last_name=:last_name, gender=:gender,dateofbirth=:dateofbirth, customer_img=:customer_img, accountstatus=:accountstatus  WHERE username = :username";
             // prepare query for excecution
             $stmt = $con->prepare($query);
             // posted values
-            $username = htmlspecialchars(strip_tags($_POST['username']));
-            $email = htmlspecialchars(strip_tags($_POST['email']));
-            $first_name = htmlspecialchars(strip_tags($_POST['first_name']));
-            $last_name = htmlspecialchars(strip_tags($_POST['last_name']));
-            $gender = htmlspecialchars(strip_tags($_POST['gender']));
+            $username = ($_POST['username']);
+            $email = ($_POST['email']);
+            $first_name = ($_POST['first_name']);
+            $last_name = ($_POST['last_name']);
+            $gender = ($_POST['gender']);
             $old_password = ($_POST['old_password']);
             $new_password = ($_POST['new_password']);
             $confirm_password = ($_POST['confirm_password']);
-            $dateofbirth = htmlspecialchars(strip_tags($_POST['dateofbirth']));
-            $accountstatus = htmlspecialchars(strip_tags($_POST['accountstatus']));
+            $dateofbirth = ($_POST['dateofbirth']);
+            $accountstatus = ($_POST['accountstatus']);
+            $customer_img = basename($_FILES["cimg"]["name"]);
+
             // bind the parameters
             $stmt->bindParam(':username', $id);
             $stmt->bindParam(':email', $email);
@@ -86,10 +89,67 @@ include 'config/session.php';
             $stmt->bindParam(':last_name', $last_name);
             $stmt->bindParam(':dateofbirth', $dateofbirth);
             $stmt->bindParam(':accountstatus', $accountstatus);
+            $stmt->bindParam(':customer_img', $customer_img);
             // Execute the query
 
             $flag = 0;
             $message = ' ';
+
+            if (!empty($_FILES['cimg']['name'])) {
+                $target_dir = "uploads/";
+                unlink($target_dir . $row['cimg']);
+                $target_file = $target_dir . basename($_FILES["cimg"]["name"]);
+                $isUploadOK = TRUE;
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                $check = getimagesize($_FILES["cimg"]["tmp_name"]);
+                if (
+                    $check !== false
+                ) {
+                    echo "File is an image - " . $check["mime"] . ".";
+                    $isUploadOK = TRUE;
+                } else {
+                    $flag = 1;
+                    $message .= "File is not an image.<br>";
+                    $isUploadOK = FALSE;
+                }
+
+
+                if ($_FILES["cimg"]["size"] > 5000000) {
+                    $flag = 1;
+                    $message .= "Sorry, your file is too large.<br>";
+                    $isUploadOK = FALSE;
+                }
+                // Allow certain file formats
+                if (
+                    $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif"
+                ) {
+                    $flag = 1;
+                    $message .= "Sorry, only JPG, JPEG, PNG & GIF files are allowed.<br>";
+                    $isUploadOK = FALSE;
+                }
+                // Check if $uploadOk is set to 0 by an error
+                if ($isUploadOK == FALSE) {
+                    $flag = 1;
+                    $message .= "Sorry, your file was not uploaded."; // if everything is ok, try to upload file
+                } else {
+                    if (move_uploaded_file($_FILES["cimg"]["tmp_name"], $target_file)) {
+                        echo "The file " . basename($_FILES["cimg"]["name"]) . " has been uploaded.";
+                    } else {
+                        $flag = 1;
+                        $message .= "Sorry, there was an error uploading your file.<br>";
+                    }
+                }
+            } else {
+
+                $customer_img = $row['customer_img'];
+            }
+
+
+
+
+
+
+
 
             if (
                 empty($old_password) && empty($new_password) && empty($confirm_password)
@@ -192,8 +252,21 @@ include 'config/session.php';
 
 
     <!--we have our html form here where new record information can be updated-->
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?id={$id}"); ?>" method="post">
+    <form action="<?php echo ($_SERVER["PHP_SELF"] . "?id={$id}"); ?>" method="post" enctype="multipart/form-data">
         <table class='table table-hover table-responsive table-bordered'>
+            <tr>
+                <td>Image</td>
+
+                <?php
+                if ($customer_img == '') {
+                    echo '<td>No image<br>';
+                } else {
+                    echo '<td><img src="uploads/' . $customer_img . '" width="200px"><br>';
+                }
+                echo ' <input type="file" name="cimg" id="fileToUpload" /></td>';
+                ?>
+
+            </tr>
             <tr>
                 <td>Username</td>
                 <td><input type='text' name='username' value="<?php echo htmlspecialchars($username, ENT_QUOTES);  ?>" class='form-control' readonly /></td>
