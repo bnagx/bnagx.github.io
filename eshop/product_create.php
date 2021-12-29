@@ -56,6 +56,54 @@ include 'config/session.php';
             $flag = 0;
             $message = "";
 
+            $target_dir = "uploads/";
+            $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+            $isUploadOK = 1;
+            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+
+
+
+            if (isset($_POST["submit"])) {
+                $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+                if ($check !== false) {
+                    echo "File is an image - " . $check["mime"] . ".";
+                    echo "<br>";
+                    echo "width is" . $check[0];
+                    echo "height is" . $check[1];
+
+                    $isUploadOK = 1;
+                } else {
+                    echo "File is not an image.";
+                    $isUploadOK = 0;
+                }
+            }
+
+            // Check file size
+            if ($_FILES["fileToUpload"]["size"] > 5000000) {
+                echo "Sorry, your file is too large.";
+                $isUploadOK = false;
+            }
+            // Allow certain file formats
+            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                echo "Please Upload only JPG, JPEG, PNG & GIF files  .";
+                $isUploadOK = false;
+            }
+            // Check if $uploadOk is set to 0 by an error
+            if ($isUploadOK == false) {
+                echo "Sorry, your file was not uploaded."; // if everything is ok, try to upload file
+            } else {
+                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                    echo "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.";
+                } else {
+                    echo "Sorry, there was an error uploading your file.";
+                }
+            }
+
+
+
+
+
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (empty($_POST["name"])) {
                     $flag = 1;
@@ -149,12 +197,15 @@ include 'config/session.php';
     }
     ?>
 
+
+
+
     <!-- html form here where the product information will be entered -->
-    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST" enctype="multipart/form-data">
         <table class='table table-hover table-responsive table-bordered'>
             <tr>
                 <td>Name</td>
-                <td><input type='text' name='name' class='form-control' value="<?php echo $_POST ? $_POST['name'] : ' '; ?>" />
+                <td><input type='text' name='name' class='form-control' value="<?php echo $_POST ? $_POST['name'] : ''; ?>" />
                     <span>
                         <?php if (isset($nameErr)) echo "<div class='text-danger'>*$nameErr</div>  "; ?>
                     </span>
@@ -186,22 +237,37 @@ include 'config/session.php';
             </tr>
 
             <tr>
+                <td>
+                    Select image to upload:
+                </td>
+                <td>
+                    <input type="file" name="fileToUpload" id="fileToUpload">
+                    <input type="submit" value="Upload Image" name="submit">
+
+                </td>
+            </tr>
+
+
+            <tr>
                 <td>Price</td>
-                <td><input type='text' name='price' class='form-control' value="<?php echo $_POST ? $_POST['price'] : ' '; ?>" />
+                <td><input type='text' name='price' class='form-control' value="<?php echo $_POST ? $_POST['price'] : ''; ?>" />
                     <span>
                         <?php if (isset($priceErr)) echo "<div class='text-danger'>*$priceErr</div>  "; ?>
                     </span>
                 </td>
             </tr>
-
             <tr>
                 <td>Promotion Price</td>
-                <td><input type='text' name='promotion' class='form-control' value="<?php echo $_POST ? $_POST['promotion'] : ' '; ?>" />
+                <td><input type='text' name='promotion' class='form-control' value="<?php echo $_POST ? $_POST['promotion'] : ''; ?>" />
                     <span>
                         <?php if (isset($promo_priceErr)) echo "<div class='text-danger'>*$promo_priceErr</div>  "; ?>
                     </span>
                 </td>
             </tr>
+
+
+
+
             <tr>
                 <td>Manufacture Date</td>
                 <td><input type='date' name='manufacture' class='form-control' value="<?php echo $_POST ? $_POST['manufacture'] : ' '; ?>" />

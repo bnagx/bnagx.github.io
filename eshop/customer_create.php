@@ -138,6 +138,7 @@ include 'config/navbar.php';
     <!-- html form here where the customer information will be entered -->
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
         <table class='table table-hover table-responsive table-bordered'>
+
             <tr>
                 <td>Username</td>
                 <td><input type='text' name='username' class='form-control' value="<?php echo $_POST ? $_POST['username'] : ''; ?> " />
@@ -146,6 +147,8 @@ include 'config/navbar.php';
                     </span>
                 </td>
             </tr>
+
+
             <tr>
                 <td>Email</td>
                 <td><input type='email' name='email' class='form-control' value=" <?php echo $_POST ? $_POST['email'] : ''; ?> " />
