@@ -1,4 +1,5 @@
 <?php
+include 'config/session.php';
 include 'config/navbar.php';
 ?>
 <!-- container -->
@@ -6,7 +7,7 @@ include 'config/navbar.php';
 
     <?php
     include 'config/database.php';
-    include 'config/session.php';
+
 
 
     $query_category = "SELECT * FROM categories ORDER BY category_id ASC";
@@ -93,7 +94,7 @@ include 'config/navbar.php';
                 . "<a href='product_update.php?id={$row['product_id']}' class='btn btn-primary'>Edit</a>"
 
                 //delete record
-                . "<a href='product_delete.php' onclick='delete_product({$row['product_id']});'  class='btn btn-danger'>Delete</a>"
+                . "<button onclick='myFunction_delete({$row['product_id']})' class='btn btn-danger'>Delete</a>"
                 . "</td>"
                 . "</tr>";
         }
@@ -114,12 +115,12 @@ include 'config/navbar.php';
             <h1>Read Products</h1>
         </div>
 
-        <div class="m-3">
+        <div class="m-3 d-flex justify-content-center">
             <a href='product_create.php' class='btn btn-primary'>Create New Product</a>
         </div>
 
         <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
-            <div class="row d-flex m-3">
+            <div class="row d-flex m-3 justify-content-center">
                 <select class="fs-4 rounded col-3" name="category">
                     <option value="show_all">Show All</option>
 
@@ -134,12 +135,12 @@ include 'config/navbar.php';
 
                 </select>
                 <input type="submit" value="Go" name="filter" class="btn-sm btn btn-secondary col-1 mx-2 fs-5" />
-            </div>
-
-            <div class="row d-flex m-3">
                 <input type="text" placeholder="Search..." name="search_field" value="<?php $search_field ?>" class="fs-4 rounded col-3" />
                 <input type="submit" value="Search" name="search" class="btn-sm btn btn-secondary col-1 mx-2 fs-5">
+
             </div>
+
+
         </form>
 
         <table class='table table-hover table-responsive table-bordered'>
@@ -168,6 +169,20 @@ include 'config/navbar.php';
 </div> <!-- end .container -->
 
 <!-- confirm delete record will be here -->
+
+<script>
+    function myFunction_delete(product_id) {
+
+        let text = "Do you sure want ot delete?";
+        if (confirm(text) == true) {
+            window.location = "product_delete.php?id=" + product_id;
+        } else {
+
+        }
+    }
+</script>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </body>

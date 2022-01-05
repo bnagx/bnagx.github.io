@@ -4,8 +4,8 @@
 
 
 <?php
-include 'config/navbar.php';
 include 'config/session.php';
+include 'config/navbar.php';
 
 ?>
 

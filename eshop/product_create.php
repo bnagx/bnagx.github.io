@@ -7,8 +7,8 @@
 
 
 <?php
-include 'config/navbar.php';
 include 'config/session.php';
+include 'config/navbar.php';
 ?>
 
 
@@ -58,13 +58,13 @@ include 'config/session.php';
             $message = "";
 
             if (!empty($_FILES['product_img']['name'])) {
-                $target_dir = "productimg/";
+                $target_dir = "productimg/" . $row['product_id'];
                 $target_file = $target_dir . basename($_FILES["product_img"]["name"]);
                 $isUploadOK = TRUE;
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
                 $check = getimagesize($_FILES["product_img"]["tmp_name"]);
                 if ($check !== false) {
-                    echo "File is an image - " . $check["mime"] . ".";
+                    // echo "File is an image - " . $check["mime"] . ".";
                     $isUploadOK = TRUE;
                 } else {
                     $flag = 1;

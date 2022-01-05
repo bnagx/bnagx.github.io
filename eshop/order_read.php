@@ -7,8 +7,8 @@
 
 
 <?php
-include 'config/navbar.php';
 include 'config/session.php';
+include 'config/navbar.php';
 ?>
 
 
@@ -46,7 +46,7 @@ include 'config/session.php';
         echo "<th>Username</th>";
         echo "<th>Order Date</th>";
         echo "<th>Email</th>";
-        echo "<th>Action</th>";
+        echo "<th c>Action</th>";
         echo "</tr>";
 
         // retrieve our table contents
@@ -60,15 +60,15 @@ include 'config/session.php';
             echo "<td>{$username}</td>";
             echo "<td>{$order_date}</td>";
             echo "<td>{$email}</td>";
-            echo "<td>";
+            echo "<td class='text-center'>";
             // read one record
             echo "<a href='order_read_one.php?id={$order_id}' class='btn btn-info m-r-1em'>Read</a>";
 
             // we will use this links on next part of this post
-            echo "<a href='order_update.php?id={$order_id}' class='btn btn-primary m-r-1em'>Edit</a>";
+            echo "<a href='order_update.php?id={$order_id}' class='mx-2 btn btn-primary m-r-1em'>Edit</a>";
 
             // we will use this links on next part of this post
-            echo "<a href='#' onclick='delete_order({$order_id});'  class='btn btn-danger'>Delete</a>";
+            echo "<button onclick='myFunction_delete({$order_id})' class='btn btn-danger'>Delete</a>";
             echo "</td>";
             echo "</tr>";
         }
@@ -87,7 +87,17 @@ include 'config/session.php';
 <!-- confirm delete record will be here -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
+<script>
+    function myFunction_delete(order_id) {
 
+        let text = "Do you sure want ot delete?";
+        if (confirm(text) == true) {
+            window.location = "order_delete.php?id=" + order_id;
+        } else {
+
+        }
+    }
+</script>
 
 
 

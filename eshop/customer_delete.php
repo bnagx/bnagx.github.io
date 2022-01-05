@@ -1,6 +1,6 @@
 <?php
 include 'config/session.php';
-include 'config/database.php';
+include 'config/navbar.php';
 
 
 $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');

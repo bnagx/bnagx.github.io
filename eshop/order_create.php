@@ -7,8 +7,8 @@
 
 
 <?php
-include 'config/navbar.php';
 include 'config/session.php';
+include 'config/navbar.php';
 ?>
 
 
@@ -97,6 +97,7 @@ include 'config/session.php';
                         $stmt->bindParam(':quantity', $_POST['quantity'][$count]);
                         if (!empty($_POST['product'][$count]) && !empty($_POST['quantity'][$count])) {
                             $stmt->execute();
+                            echo "<script>location.replace('order_read_one.php?id=" . $last_id . "&msg=orderCreate_success')</script>";
                         }
                     }
                     echo "<div class='alert alert-success'>Record was saved.Last inserted ID is: $last_id</div>";
@@ -203,7 +204,7 @@ include 'config/session.php';
                 echo '<select class="w-100 fs-4 rounded" name="quantity[]" >';
                 echo "<option value=''>Please Select Your Quantity</option>";
                 $quantity_list = $_POST ? $_POST['quantity'] : ' ';
-                for ($quantity = 1; $quantity <= 5; $quantity++) {
+                for ($quantity = 1; $quantity <= 10; $quantity++) {
                     $selected_quantity = $quantity == $quantity_list[$product_row] ? 'selected' : '';
                     echo "<option value='$quantity' $selected_quantity>$quantity</option>";
                 }
@@ -225,7 +226,7 @@ include 'config/session.php';
                 </td>
                 <td>
                     <input type='submit' value='Save' class='btn btn-primary' />
-                    <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                    <a href='order_read.php' class='btn btn-danger'>Back to read order</a>
                 </td>
             </tr>
         </table>

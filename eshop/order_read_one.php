@@ -8,8 +8,8 @@
 
 
 <?php
-include 'config/navbar.php';
 include 'config/session.php';
+include 'config/navbar.php';
 ?>
 
 
@@ -17,6 +17,14 @@ include 'config/session.php';
 
     <!-- container -->
     <div class="container">
+        <?php
+        if (isset($_GET['msg']) && $_GET['msg'] == 'orderCreate_success') {
+            echo "<div class='alert alert-success mt-4'> Order are created Successful.</div>";
+        }
+        ?>
+
+
+
         <div class="page-header">
             <h1>Read Orders</h1>
         </div>

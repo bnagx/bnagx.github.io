@@ -7,7 +7,48 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 </head>
 
+
+
+
+
+
 <body>
+
+    <?php
+    include 'config/database.php';
+    if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+        $query = 'SELECT * from customers WHERE email= ?';
+    } else {
+        $query = 'SELECT * FROM customers WHERE username=?';
+    }
+
+    $stmt = $con->prepare($query);
+    $stmt->bindParam(1, $_SESSION['username']);
+    $stmt->execute();
+    $customer_list = $stmt->rowCount();
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+    if ($customer_list > 0) {
+        $username = $row['username'];
+        $first_name = $row['first_name'];
+        $last_name = $row['last_name'];
+        $gender = $row['gender'];
+        $customer_img = $row['customer_img'];
+
+        $customer_name = "$first_name $last_name";
+    }
+
+    ?>
+
+
+
+
+
+
+
+
     <nav class="navbar navbar-expand-lg navbar-dark navbar-md-light bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand text-light" href="home.php"> Eshop</a>
@@ -40,13 +81,27 @@
                             <li><a class="dropdown-item" href="order_create.php">Create Order</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-secondary" href="contactus.php">Contact Us</a>
-                    </li>
                 </ul>
-                <span class="navbar-text d-flex">
-                    <a class="nav-link text-secondary" href="logout.php">Log out</a>
-                </span>
+                <div class="collapse navbar-collapse d-flex justify-content-end me-5" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown d-flex">
+                            <a class="nav-link" href="#" id="navbarDropdownMenuLink2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <?php
+                                echo $customer_name;
+                                if ($row['customer_img'] == '') {
+                                    echo '<td><img src="cus_img/noimg.png" width="50px" height="50px"></td>';
+                                } else {
+                                    echo '<td><img src="cus_img/' . $customer_img . '"width="50px" height="50px" class="rounded-circle ms-3"></td>';
+                                }
+                                ?>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                                <li><a class="dropdown-item" href="customer_update.php?id=<?php echo $username ?>">Edit Profile</a></li>
+                                <li><a class="dropdown-item" href="logout.php">Log out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
