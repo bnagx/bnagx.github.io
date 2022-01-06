@@ -12,22 +12,37 @@ include 'config/session.php';
 include 'config/navbar.php';
 ?>
 
+<head>
+    <title>Order Details</title>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+
+
 
 <body>
-
     <!-- container -->
     <div class="container">
-        <?php
-        if (isset($_GET['msg']) && $_GET['msg'] == 'orderCreate_success') {
-            echo "<div class='alert alert-success mt-4'> Order are created Successful.</div>";
-        }
-        ?>
+
 
 
 
         <div class="page-header">
-            <h1>Read Orders</h1>
+            <h1>Order Details</h1>
         </div>
+
+        <!-- this is to direct user to order details page once they create a new order and update the order -->
+        <?php
+        if (isset($_GET['msg']) && $_GET['msg'] == 'orderCreate_success') {
+            echo "<div class='alert alert-success mt-4'> Order is created Successful.</div>";
+        }
+        if (isset($_GET['msg']) && $_GET['msg'] == 'orderUpdate_success') {
+            echo "<div class='alert alert-success mt-4'> Order is Update Successful.</div>";
+        }
+        ?>
+
+
 
         <?php
         // get passed parameter value, in this case, the record ID
@@ -47,11 +62,8 @@ include 'config/navbar.php';
             WHERE order_id = :order_id ";
 
             $stmt = $con->prepare($query);
-
             $stmt->bindParam(":order_id", $id);
-
             $stmt->execute();
-
             $num = $stmt->rowCount();
 
 
@@ -97,8 +109,8 @@ include 'config/navbar.php';
 
                 echo "<th>Product Name </th>";
                 echo "<th>Quantity</th>";
-                echo "<th>Price</th>";
-                echo "<th>Total</th>";
+                echo "<th>Price(RM)</th>";
+                echo "<th>Total(RM)</th>";
                 // echo "<th>Username</th>";
                 echo "</tr>";
 
@@ -110,22 +122,25 @@ include 'config/navbar.php';
                     echo "<tr>";
                     echo "<td>{$name}</td>";
                     echo "<td>{$quantity}</td>";
-                    echo "<td class='col text-end'>{$price}</td>";
+                    echo "<td class='col text-end'>" . number_format($price, 2) . "</td>";
                     $total = $price * $quantity;
-                    echo "<td class='col text-end'>{$total}</td>";
+                    echo "<td class='col text-end'>" . number_format($total, 2) . "</td>";
                     echo "</tr>";
                     $grand_total = $grand_total + $total;
                 }
 
                 echo "<tr class='fw-bold fs-5'>";
                 echo "<td colspan='3'>Grand Total:</td>";
-                echo "<td class='col text-end'>$grand_total</td>";
+                echo "<td class='col text-end'>" . number_format($grand_total, 2) . "</td>";
                 echo "</tr>";
 
 
 
                 // end table
                 echo "</table>";
+
+                echo "<a href='order_update.php?id={$id}' class='btn btn-primary m-r-1em mx-3'>Edit Order</a>";
+                echo "<a href='order_read.php' class='btn btn-danger'>Back to Order List</a>";
             }
         }
 
@@ -135,12 +150,6 @@ include 'config/navbar.php';
         }
         ?>
 
-        <tr>
-            <td></td>
-            <td>
-                <a href='order_read.php' class='btn btn-danger'>Back to read order</a>
-            </td>
-        </tr>
 
     </div> <!-- end .container -->
 
