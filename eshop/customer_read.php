@@ -13,6 +13,14 @@ include 'config/navbar.php';
 ?>
 
 
+<head>
+    <title>Customer List</title>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+
+
 <!-- container -->
 <div class="container">
     <div class="page-header">
@@ -48,6 +56,7 @@ include 'config/navbar.php';
         echo "<th>First Name</th>";
         echo "<th>Last Name</th>";
         echo "<th>Gender</th>";
+        echo "<th>Action</th>";
         echo "</tr>";
 
         // retrieve our table contents
@@ -70,7 +79,7 @@ include 'config/navbar.php';
             echo "<a href='customer_update.php?id={$username}' class='btn btn-primary m-r-1em'>Edit</a>";
 
             // we will use this links on next part of this post
-            echo "<a href='customer_delete.php' onclick='delete_customer({$username});'  class='btn btn-danger'>Delete</a>";
+            echo "<a href='customer_delete.php' onclick='delete_customer(\"{$username}\");'  class='btn btn-danger'>Delete</a>";
             echo "</td>";
             echo "</tr>";
         }

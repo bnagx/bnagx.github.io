@@ -10,6 +10,14 @@ include 'config/session.php';
 include 'config/navbar.php';
 ?>
 
+
+<head>
+    <title>Create Product</title>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+
 <!-- container -->
 <div class="container">
     <div class="page-header">
@@ -111,7 +119,7 @@ include 'config/navbar.php';
         <tr>
             <td></td>
             <td>
-                <a href='product_read.php' class='btn btn-danger'>Back to read products</a>
+                <a href='product_read.php' class='btn btn-danger'>Back to Product List</a>
             </td>
         </tr>
     </table>

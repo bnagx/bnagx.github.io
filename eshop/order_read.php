@@ -11,11 +11,17 @@ include 'config/session.php';
 include 'config/navbar.php';
 ?>
 
+<head>
+    <title>Order List</title>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
 
 <!-- container -->
 <div class="container">
     <div class="page-header">
-        <h1>Read Orders</h1>
+        <h1>Order List</h1>
     </div>
 
     <?php
@@ -25,7 +31,7 @@ include 'config/navbar.php';
     // delete message prompt will be here
 
     // select all data
-    $query = "SELECT order_summary.order_id, order_summary.username, customers.email, order_summary.order_date FROM order_summary  INNER JOIN customers ON order_summary.username= customers.username ORDER BY order_id ";
+    $query = "SELECT order_summary.order_id, order_summary.username, customers.email, customers.last_modified, order_summary.order_date FROM order_summary  INNER JOIN customers ON order_summary.username= customers.username ORDER BY order_id ";
     $stmt = $con->prepare($query);
     $stmt->execute();
 
@@ -45,8 +51,9 @@ include 'config/navbar.php';
         echo "<th>Order ID</th>";
         echo "<th>Username</th>";
         echo "<th>Order Date</th>";
+        echo "<th>Last Modified Date</th>";
         echo "<th>Email</th>";
-        echo "<th c>Action</th>";
+        echo "<th>Action</th>";
         echo "</tr>";
 
         // retrieve our table contents
@@ -59,6 +66,7 @@ include 'config/navbar.php';
             echo "<td>{$order_id}</td>";
             echo "<td>{$username}</td>";
             echo "<td>{$order_date}</td>";
+            echo "<td>{$last_modified}</td>";
             echo "<td>{$email}</td>";
             echo "<td class='text-center'>";
             // read one record

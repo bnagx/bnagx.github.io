@@ -12,6 +12,15 @@ include 'config/navbar.php';
 ?>
 
 
+<head>
+    <title>Create Product</title>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+
+
+
 <!-- container -->
 <div class="container">
     <div class="page-header">
@@ -54,11 +63,12 @@ include 'config/navbar.php';
             $stmt->bindParam(':manufacture', $manufacture);
             $stmt->bindParam(':expired', $expired);
             $stmt->bindParam(':product_img', $product_img);
+
             $flag = 0;
             $message = "";
 
             if (!empty($_FILES['product_img']['name'])) {
-                $target_dir = "productimg/" . $row['product_id'];
+                $target_dir = "productimg/";
                 $target_file = $target_dir . basename($_FILES["product_img"]["name"]);
                 $isUploadOK = TRUE;
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -92,7 +102,7 @@ include 'config/navbar.php';
                     $message .= "Sorry, your file was not uploaded."; // if everything is ok, try to upload file
                 } else {
                     if (move_uploaded_file($_FILES["product_img"]["tmp_name"], $target_file)) {
-                        echo "The file " . basename($_FILES["product_img"]["name"]) . " has been uploaded.";
+                        //echo "The file " . basename($_FILES["product_img"]["name"]) . " has been uploaded.";
                     } else {
                         $flag = 1;
                         $message .= "Sorry, there was an error uploading your file.<br>";

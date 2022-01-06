@@ -1,11 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 
-<head>
-    <title>PDO - Create a Record - PHP CRUD Tutorial</title>
-    <!-- Latest compiled and minified Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-</head>
+
 
 
 
@@ -63,21 +59,23 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink1" role="button" data-bs-toggle="dropdown" aria-expanded="false">Customer</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink1">
-                            <li><a class="dropdown-item" href="customer_read.php">Read Customer</a></li>
+                            <li><a class="dropdown-item" href="customer_read.php">Customer List </a></li>
                             <li><a class="dropdown-item" href="customer_create.php">Create Customer</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Product</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="product_read.php">Read Product</a></li>
+                            <li><a class="dropdown-item" href="product_read.php">Product List</a></li>
                             <li><a class="dropdown-item" href="product_create.php">Create Product</a></li>
+                            <li><a class="dropdown-item" href="category_read.php">Category List</a></li>
+                            <li><a class="dropdown-item" href="category_create.php">Create Category</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" role="button" data-bs-toggle="dropdown" aria-expanded="false">Order</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-                            <li><a class="dropdown-item" href="order_read.php">Read Order</a></li>
+                            <li><a class="dropdown-item" href="order_read.php">Order List</a></li>
                             <li><a class="dropdown-item" href="order_create.php">Create Order</a></li>
                         </ul>
                     </li>
@@ -86,6 +84,7 @@
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown d-flex">
                             <a class="nav-link" href="#" id="navbarDropdownMenuLink2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <!-- this is to verify whether the user have upload or image or not, if not then it will be default which is noimg.png(user logo) -->
                                 <?php
                                 echo $customer_name;
                                 if ($row['customer_img'] == '') {

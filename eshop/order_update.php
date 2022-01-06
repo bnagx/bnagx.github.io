@@ -9,8 +9,15 @@
 <?php
 include 'config/session.php';
 include 'config/navbar.php';
-
 ?>
+
+
+<head>
+    <title>Edit Order</title>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
 
 <div class="container">
     <div class="page-header">
@@ -122,7 +129,7 @@ include 'config/navbar.php';
                         $stmt_ins->bindParam(':quantity', $_POST['quantity'][$product_ins]);
                         if (!empty($_POST['product'][$product_ins]) && !empty($_POST['quantity'][$product_ins])) {
                             $stmt_ins->execute();
-                            header("Location:order_read_one.php?id=" . $id);
+                            echo "<script>location.replace('order_read_one.php?id=" . $id . "&msg=orderUpdate_success')</script>";
                         }
                     }
                     echo "<div class='alert alert-success'>Record was saved.</div>";
@@ -225,7 +232,7 @@ include 'config/navbar.php';
 
                 <td>
                     <input type='submit' value='Save Changes' class='btn btn-primary' />
-                    <a href='order_read.php' class='btn btn-danger'>Back to read Order</a>
+                    <a href='order_read.php' class='btn btn-danger'>Back to Order List</a>
                 </td>
 
 
@@ -249,6 +256,8 @@ include 'config/navbar.php';
             if (total > 1) {
                 var element = document.querySelector('.productRow');
                 element.remove(element);
+            } else {
+                alert("You can't delete the last product.");
             }
         }
     }, false);
@@ -262,8 +271,8 @@ include 'config/navbar.php';
 
     function deleteMe(row) {
         var table = document.getElementById('order_table')
-        var allrows = table.getElementsByTagName('tr');
-        if (allrows.length == 1) {
+        var allrows = document.querySelectorAll('.productRow').length;
+        if (allrows == 1) {
             alert("You are not allowed to delete.");
         } else {
             if (confirm("Confirm to delete?")) {
