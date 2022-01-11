@@ -129,7 +129,7 @@
                     . "<td>" . $row['name'] . "</td>"
                     . "<td>" . $row['description'] . "</td>"
                     . $category_header
-                    . "<td class='text-end'>" . $product_price . "</td>"
+                    . "<td class='text-end'>" . number_format($product_price, 2) . "</td>"
 
                     . "<td>"
                     //read one record

@@ -102,11 +102,11 @@ include 'config/navbar.php';
         </tr>
         <tr>
             <td>Price</td>
-            <td><?php echo htmlspecialchars($price, ENT_QUOTES);  ?></td>
+            <td><?php echo htmlspecialchars(number_format($price, 2), ENT_QUOTES);  ?></td>
         </tr>
         <tr>
             <td>Promotion Price</td>
-            <td><?php echo htmlspecialchars($promo_price, ENT_QUOTES);  ?></td>
+            <td><?php echo htmlspecialchars(number_format($promo_price, 2), ENT_QUOTES);  ?></td>
         </tr>
         <tr>
             <td>Manufacture Date</td>
