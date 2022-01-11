@@ -1,4 +1,4 @@
-<!--ID : 2020052 -->
+<!--ID : 2020052_BSE -->
 <!--Name : WAN HAO XIN   -->
 <!--Topic : Eshop Index -->
 
@@ -104,7 +104,7 @@ session_start();
                 if (isset($flag) && $flag == 1) {
                     echo "<div class='alert alert-danger'>$message</div>";
                 }
-                if (isset($_GET['msg']) && $_GET['msg'] == 'createsuccess') {
+                if (isset($_GET['msg']) && $_GET['msg'] == 'success') {
                     echo "<div class='alert alert-success'>Account Created Successfully. Please Log In.</div>";
                 }
                 ?>

@@ -1,3 +1,11 @@
+<!--ID : 2020052_BSE -->
+<!--Name : WAN HAO XIN   -->
+<!--Topic : Category List -->
+
+
+
+
+
 <?php
 include 'config/session.php';
 include 'config/navbar.php';
@@ -69,7 +77,7 @@ include 'config/database.php';
             echo "<a href='category_read_one.php?id={$category_id}' class='btn btn-info m-r-1em'>Read</a>";
 
             // we will use this links on next part of this post
-            echo "<a href='category_update.php?id={$category_id}' class='btn btn-primary m-r-1em'>Edit</a>";
+            echo "<a href='category_update.php?id={$category_id}' class='btn btn-primary m-r-1em mx-2 my-2'>Edit</a>";
 
             // we will use this links on next part of this post
             echo "<a href='#' onclick='delete_category({$category_id});'  class='btn btn-danger'>Delete</a>";

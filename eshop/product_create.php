@@ -1,6 +1,6 @@
-<!--ID : 2020052 -->
+<!--ID : 2020052_BSE -->
 <!--Name : WAN HAO XIN   -->
-<!--Topic : Eshop Product Create to insert the data in database(PDO Method)-->
+<!--Topic : Eshop Product Create -->
 
 
 

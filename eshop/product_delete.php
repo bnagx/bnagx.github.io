@@ -1,3 +1,11 @@
+<!--ID : 2020052_BSE -->
+<!--Name : WAN HAO XIN   -->
+<!--Topic : Product Delete -->
+
+
+
+
+
 <?php
 // include database connection
 include 'config/database.php';
