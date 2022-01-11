@@ -38,7 +38,7 @@ include 'config/navbar.php';
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT username,email,first_name,last_name,gender,customer_img, dateofbirth, registration,accountstatus FROM customers WHERE username = :username ";
+            $query = "SELECT username,email,first_name,last_name,gender,customer_img, dateofbirth, registration,accountstatus, customer_img FROM customers WHERE username = :username ";
             $stmt = $con->prepare($query);
 
             // Bind the parameter
@@ -79,7 +79,7 @@ include 'config/navbar.php';
                 if ($customer_img == '') {
                     echo '<td>No image</td>';
                 } else {
-                    echo '<td><img src="uploads/' . $customer_img . '"width="200px"></td>';
+                    echo '<td><img src="cus_img/' . $customer_img . '"width="200px"></td>';
                 }
 
                 ?>
@@ -126,7 +126,7 @@ include 'config/navbar.php';
             <tr>
                 <td></td>
                 <td>
-                    <a href='customer_read.php' class='btn btn-danger'>Back to read customers</a>
+                    <a href='customer_read.php' class='btn btn-danger'>Back to Customer List</a>
                 </td>
             </tr>
         </table>

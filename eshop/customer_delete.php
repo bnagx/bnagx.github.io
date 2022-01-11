@@ -1,36 +1,25 @@
 <?php
-include 'config/session.php';
-include 'config/navbar.php';
-
-
-$id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
-
-
-
+// include database connection
+include 'config/database.php';
 try {
+    // get record ID
+    // isset() is a PHP function used to verify if a value is there or not
+    $id = isset($_GET['id']) ? $_GET['id'] :  die('ERROR: Record ID not found.');
 
-    $qdelete = "DELETE FROM customers WHERE username = :username";
-
-    $stmt = $con->prepare($qdelete);
-    $stmt->bindParam(":username", $id);
-    $stmt->execute();
-
-    if (filter_var($_SESSION['correct_username'], FILTER_VALIDATE_EMAIL)) {
-        $query = 'SELECT * from customers WHERE email= ?';
-    } else {
-        $query = 'SELECT * FROM customers WHERE username=?';
-    }
-
+    // delete query
+    $query = "DELETE FROM customers WHERE username = ?";
     $stmt = $con->prepare($query);
-    $stmt->bindParam(1, $_SESSION['correct_username']);
-    $stmt->execute();
-    $numCustomer = $stmt->rowCount();
+    $stmt->bindParam(1, $id);
 
-    if ($numCustomer > 0) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        extract($row);
-        header("Location:customer_read.php?id=$username");
+    if ($stmt->execute()) {
+        // redirect to read records page and
+        // tell the user record was deleted
+        header('Location: customer_read.php?action=deleted');
+    } else {
+        die('Unable to delete record.');
     }
-} catch (PDOException $exception) {
+}
+// show error
+catch (PDOException $exception) {
     die('ERROR: ' . $exception->getMessage());
 }

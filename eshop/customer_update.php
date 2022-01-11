@@ -83,7 +83,7 @@ include 'config/navbar.php';
             $confirm_password = ($_POST['confirm_password']);
             $dateofbirth = ($_POST['dateofbirth']);
             $accountstatus = ($_POST['accountstatus']);
-            $customer_img = basename($_FILES["cimg"]["name"]);
+            $customer_img = basename($_FILES["cus_img"]["name"]);
 
             // bind the parameters
             $stmt->bindParam(':username', $id);
@@ -100,17 +100,17 @@ include 'config/navbar.php';
             $flag = 0;
             $message = ' ';
 
-            if (!empty($_FILES['cimg']['name'])) {
-                $target_dir = "uploads/";
-                unlink($target_dir . $row['cimg']);
-                $target_file = $target_dir . basename($_FILES["cimg"]["name"]);
+            if (!empty($_FILES['cus_img']['name'])) {
+                $target_dir = "cus_img/";
+                unlink($target_dir . $row['customer_img']);
+                $target_file = $target_dir . basename($_FILES["cus_img"]["name"]);
                 $isUploadOK = TRUE;
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                $check = getimagesize($_FILES["cimg"]["tmp_name"]);
+                $check = getimagesize($_FILES["cus_img"]["tmp_name"]);
                 if (
                     $check !== false
                 ) {
-                    echo "File is an image - " . $check["mime"] . ".";
+
                     $isUploadOK = TRUE;
                 } else {
                     $flag = 1;
@@ -119,7 +119,7 @@ include 'config/navbar.php';
                 }
 
 
-                if ($_FILES["cimg"]["size"] > 5000000) {
+                if ($_FILES["cus_img"]["size"] > 5000000) {
                     $flag = 1;
                     $message .= "Sorry, your file is too large.<br>";
                     $isUploadOK = FALSE;
@@ -137,8 +137,7 @@ include 'config/navbar.php';
                     $flag = 1;
                     $message .= "Sorry, your file was not uploaded."; // if everything is ok, try to upload file
                 } else {
-                    if (move_uploaded_file($_FILES["cimg"]["tmp_name"], $target_file)) {
-                        echo "The file " . basename($_FILES["cimg"]["name"]) . " has been uploaded.";
+                    if (move_uploaded_file($_FILES["cus_img"]["tmp_name"], $target_file)) {
                     } else {
                         $flag = 1;
                         $message .= "Sorry, there was an error uploading your file.<br>";
@@ -266,9 +265,9 @@ include 'config/navbar.php';
                 if ($customer_img == '') {
                     echo '<td>No image<br>';
                 } else {
-                    echo '<td><img src="uploads/' . $customer_img . '" width="200px"><br>';
+                    echo '<td><img src="cus_img/' . $customer_img . '" width="200px"><br>';
                 }
-                echo ' <input type="file" name="cimg" id="fileToUpload" /></td>';
+                echo ' <input type="file" name="cus_img" id="fileToUpload" /></td>';
                 ?>
 
             </tr>
@@ -344,7 +343,7 @@ include 'config/navbar.php';
                 <td></td>
                 <td>
                     <input type='submit' value='Save Changes' class='btn btn-primary' />
-                    <a href='customer_read.php' class='btn btn-danger'>Back to read products</a>
+                    <a href='customer_read.php' class='btn btn-danger'>Back to Customer List</a>
                 </td>
             </tr>
         </table>

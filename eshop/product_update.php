@@ -114,7 +114,7 @@ include 'config/navbar.php';
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
                 $check = getimagesize($_FILES["product_img"]["tmp_name"]);
                 if ($check !== false) {
-                    echo "File is an image - " . $check["mime"] . ".";
+
                     $isUploadOK = TRUE;
                 } else {
                     $flag = 1;
@@ -140,7 +140,6 @@ include 'config/navbar.php';
                     $message .= "Sorry, your file was not uploaded."; // if everything is ok, try to upload file
                 } else {
                     if (move_uploaded_file($_FILES["product_img"]["tmp_name"], $target_file)) {
-                        echo "The file " . basename($_FILES["product_img"]["name"]) . " has been uploaded.";
                     } else {
                         $flag = 1;
                         $message .= "Sorry, there was an error uploading your file.<br>";
@@ -151,59 +150,51 @@ include 'config/navbar.php';
                 $product_img = $row['product_img'];
             }
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                if (empty($name)) {
-
-                    $flag = 1;
-                    $message = 'Please enter item name.';
-                }
-
-                if (empty($price)) {
-
-                    $flag = 1;
-                    $message = 'Please enter price.';
-                }
-
-                if (empty($promo_price)) {
-
-                    $flag = 1;
-                    $message = 'Please enter promotion price.';
-                }
-                if (empty($manu_date)) {
-
-                    $flag = 1;
-                    $message = 'Please select manufactor date.';
-                }
-
-                if (empty($exp_date)) {
-
-                    $flag = 1;
-                    $message = 'Please select expired date.';
-                }
-                if (
-                    !is_numeric($price) || !is_numeric($promo_price)
-                ) {
-                    $flag = 1;
-                    $message = "Price must be numerical.";
-                }
-
-                if ($price < 0 || $promo_price < 0) {
-                    $flag = 1;
-                    $message = "Price cannot be negative.";
-                }
-                if ($promo_price > $price) {
-                    $flag = 1;
-                    $message = "Promo Price cannot bigger than Normal Price";
-                }
-                if ($manu_date > $exp_date) {
-                    $flag = 1;
-                    $message = "Expired date must be after Manufacture date";
-                }
+            if (empty($name)) {
+                $flag = 1;
+                $message = "Please fill in all the fields.";
+                $nameErr = "Name is required";
+            } elseif (empty($description)) {
+                $flag = 1;
+                $message = "Please fill in all the fields.";
+                $descriptionErr = "First Name is required";
+            } elseif (empty($category)) {
+                $flag = 1;
+                $message = "Please fill in all the fields.";
+                $categoryErr = "Last Name is required";
+            } elseif (empty($price)) {
+                $flag = 1;
+                $message = "Please fill in all the fields.";
+                $priceErr = "Last Name is required";
+            } elseif (empty($promo_price)) {
+                $flag = 1;
+                $message = "Please fill in all the fields.";
+                $promo_priceErr = "Last Name is required";
+            } elseif (empty($manu_date)) {
+                $flag = 1;
+                $message = "Please fill in all the fields.";
+                $manu_dateErr = "Last Name is required";
             }
-            if ($stmt->execute()) {
-                echo "<div class='alert alert-success'>Record was updated.</div>";
+
+            if ($promo_price > $price) {
+                $flag = 1;
+                $message = "Error: Promotion Price cannot bigger than Original Price";
+            } elseif ($manu_date > $exp_date) {
+                $flag = 1;
+                $message = "Error: Expired date must be after Manufacture date";
+            }
+
+            if ($flag == 0) {
+                if ($stmt->execute()) {
+                    echo "<script>location.replace('product_read_one.php?id=" . $id . "')</script>";
+                    echo "<div class='alert alert-success'>Record was saved.</div>";
+                } else {
+                    echo "Unable to save record.";
+                }
             } else {
-                echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                echo "<div class='alert alert-danger'>";
+                echo $message;
+                echo "</div>";
             }
         }
         // show errors
@@ -232,7 +223,12 @@ include 'config/navbar.php';
             </tr>
             <tr>
                 <td>Name</td>
-                <td><input type='text' name='name' value="<?php echo htmlspecialchars($name, ENT_QUOTES);  ?>" class='form-control' /></td>
+                <td><input type='text' name='name' value="<?php echo htmlspecialchars($name, ENT_QUOTES);  ?>" class='form-control' />
+                    <span>
+                        <?php if (isset($nameErr)) echo "<div class='text-danger'>*$nameErr</div>  "; ?>
+                    </span>
+                </td>
+
             </tr>
             <tr>
                 <td>Category</td>
@@ -263,20 +259,40 @@ include 'config/navbar.php';
             </tr>
             <tr>
                 <td>Description</td>
-                <td><textarea name='description' class='form-control'><?php echo htmlspecialchars($description, ENT_QUOTES);  ?></textarea></td>
+                <td><textarea name='description' class='form-control'><?php echo htmlspecialchars($description, ENT_QUOTES);  ?></textarea>
+                    <span>
+                        <?php if (isset($descriptionErr)) echo "<div class='text-danger'>*$descriptionErr</div>  "; ?>
+                    </span>
+                </td>
+
             </tr>
 
             <tr>
                 <td>Price</td>
-                <td><input type='text' name='price' value="<?php echo htmlspecialchars($price, ENT_QUOTES);  ?>" class='form-control' /></td>
+                <td><input type='text' name='price' value="<?php echo htmlspecialchars($price, ENT_QUOTES);  ?>" class='form-control' />
+                    <span>
+                        <?php if (isset($priceErr)) echo "<div class='text-danger'>*$priceErr</div>  "; ?>
+                    </span>
+                </td>
+
             </tr>
             <tr>
                 <td>Promotion Price</td>
-                <td><input type='text' name='promo_price' value="<?php echo htmlspecialchars($promo_price, ENT_QUOTES);  ?>" class='form-control' /></td>
+                <td><input type='text' name='promo_price' value="<?php echo htmlspecialchars($promo_price, ENT_QUOTES);  ?>" class='form-control' />
+                    <span>
+                        <?php if (isset($priceErr)) echo "<div class='text-danger'>*$promo_priceErr</div>  "; ?>
+                    </span>
+                </td>
+
             </tr>
             <tr>
                 <td>Manufacture Date</td>
-                <td><input type='date' name='manu_date' value="<?php echo htmlspecialchars($manu_date, ENT_QUOTES);  ?>" class='form-control' /></td>
+                <td><input type='date' name='manu_date' value="<?php echo htmlspecialchars($manu_date, ENT_QUOTES);  ?>" class='form-control' />
+                    <span>
+                        <?php if (isset($priceErr)) echo "<div class='text-danger'>*$manu_dateErr</div>  "; ?>
+                    </span>
+                </td>
+
             </tr>
             <tr>
                 <td>Expired Date</td>

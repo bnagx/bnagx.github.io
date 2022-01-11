@@ -296,7 +296,7 @@ include 'config/navbar.php';
                 <td></td>
                 <td>
                     <input type='submit' value='Save' class='btn btn-primary' />
-                    <a href="product_read.php" class='btn btn-danger'>Back to read products</a>
+                    <a href="product_read.php" class='btn btn-danger'>Back to Product List</a>
                 </td>
             </tr>
         </table>

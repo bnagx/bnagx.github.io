@@ -47,7 +47,7 @@ if (isset($_SESSION["username"])) {
                 $last_name = $_POST['last_name'];
                 //$gender = $_POST['gender'];
                 $dateofbirth = $_POST['dateofbirth'];
-                $customer_img = basename($_FILES["cimg"]["name"]);
+                $customer_img = basename($_FILES["customer_img"]["name"]);
                 // bind the parameters
                 $stmt->bindParam(':username', $username);
                 $stmt->bindParam(':email', $email);
@@ -65,14 +65,14 @@ if (isset($_SESSION["username"])) {
                 $cur_date = date('Y');
                 $cust_age = ((int)$cur_date - (int)$dateofbirth);
 
-                if (!empty($_FILES['cimg']['name'])) {
-                    $target_dir = "uploads/";
-                    $target_file = $target_dir . basename($_FILES["cimg"]["name"]);
+                if (!empty($_FILES['customer_img']['name'])) {
+                    $target_dir = "cus_img/";
+                    $target_file = $target_dir . basename($_FILES["customer_img"]["name"]);
                     $isUploadOK = TRUE;
                     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                    $check = getimagesize($_FILES["cimg"]["tmp_name"]);
+                    $check = getimagesize($_FILES["customer_img"]["tmp_name"]);
                     if ($check !== false) {
-                        // echo "File is an image - " . $check["mime"] . ".";
+                        echo "File is an image - " . $check["mime"] . ".";
                         $isUploadOK = TRUE;
                     } else {
                         $flag = 1;
@@ -81,9 +81,7 @@ if (isset($_SESSION["username"])) {
                     }
 
 
-                    if (
-                        $_FILES["cimg"]["size"] > 5000000
-                    ) {
+                    if ($_FILES["customer_img"]["size"] > 5000000) {
                         $flag = 1;
                         $message .= "Sorry, your file is too large.<br>";
                         $isUploadOK = FALSE;
@@ -99,8 +97,8 @@ if (isset($_SESSION["username"])) {
                         $flag = 1;
                         $message .= "Sorry, your file was not uploaded."; // if everything is ok, try to upload file
                     } else {
-                        if (move_uploaded_file($_FILES["cimg"]["tmp_name"], $target_file)) {
-                            echo "The file " . basename($_FILES["cimg"]["name"]) . " has been uploaded.";
+                        if (move_uploaded_file($_FILES["customer_img"]["tmp_name"], $target_file)) {
+                            echo "The file " . basename($_FILES["customer_img"]["name"]) . " has been uploaded.";
                         } else {
                             $flag = 1;
                             $message .= "Sorry, there was an error uploading your file.<br>";
@@ -108,7 +106,7 @@ if (isset($_SESSION["username"])) {
                     }
                 } else {
 
-                    $customer_img = '';
+                    $customer_img = 'noimg.png';
                 }
 
 
@@ -187,7 +185,7 @@ if (isset($_SESSION["username"])) {
                 if ($flag == 0) {
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was saved.</div>";
-                        header('Location:index.php?msg=createsuccess');
+                        //header('Location:index.php?msg=createsuccess');
                     } else {
                         echo "Unable to save record.";
                     }
@@ -287,7 +285,7 @@ if (isset($_SESSION["username"])) {
 
                 <tr>
                     <td>Select image (optional):</td>
-                    <td> <input type="file" name="cimg" id="fileToUpload">
+                    <td> <input type="file" name="cus_img" id="fileToUpload">
                     </td>
                 </tr>
 

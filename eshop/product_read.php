@@ -19,7 +19,7 @@ include 'config/navbar.php';
     $stmt_category = $con->prepare($query_category);
     $stmt_category->execute();
 
-    $query_allProd = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+    $query_allProd = "SELECT categories.category_name, products.product_id, products.name, products.description,  products.product_img, products.price
     FROM categories
     INNER JOIN products 
     ON products.category_id = categories.category_id 
@@ -44,7 +44,7 @@ include 'config/navbar.php';
             $stmt_selectedCat = $con->prepare($query_selectedCat);
             $stmt_selectedCat->bindParam(':category_id', $category_option);
         } else {
-            $query_selectedCat = "SELECT categories.category_name, products.product_id, products.name, products.description, products.price
+            $query_selectedCat = "SELECT categories.category_name, products.product_id, products.name, products.description,products.product_img, products.price
             FROM categories
             INNER JOIN products 
             ON products.category_id = categories.category_id 
@@ -88,9 +88,10 @@ include 'config/navbar.php';
             $table_content = $table_content . "<tr>"
                 . "<td>" . $row['product_id'] . "</td>"
                 . "<td>" . $row['name'] . "</td>"
+                //  . "<td><img src='" . $row['product_img'] . "' style='object-fit: cover;height:100px;width:100px;'></td>"
                 . "<td>" . $row['description'] . "</td>"
                 . $category_header
-                . "<td >" . $row['price'] . "</td>"
+                . "<td class='text-end'>" . number_format($row['price'], 2) . "</td>"
                 . "<td>"
                 //read one record
                 . "<a href='product_read_one.php?id={$row['product_id']}' class='btn btn-info'>Read</a>"
@@ -154,10 +155,11 @@ include 'config/navbar.php';
                 <th>ID</th>
                 <th>Name</th>
                 <th>Description</th>
+                <!-- <th>Photo</th> -->
                 <?php
                 echo $_POST && $category_option == "show_all" || !isset($_POST['filter']) ? "<th>Category</th>" : '';
                 ?>
-                <th>Price(RM)</th>
+                <th class="text-end">Price(RM)</th>
                 <th>Action</th>
             </tr>
 
